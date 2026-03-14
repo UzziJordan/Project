@@ -1,16 +1,16 @@
 import React from 'react'
-import Navbar from '../Landingpage/Navbar';
-import Section1 from '../Landingpage/Section1';
-import Section2 from '../Landingpage/Section2';
-import Section3 from '../Landingpage/Section3';
-import Section4 from '../Landingpage/Section4';
-import Section5 from '../Landingpage/Section5';
-import Section6 from '../Landingpage/Section6';
-import Section7 from '../Landingpage/Section7';
-import Footer from '../Landingpage/Footer';
+import Navbar from '../Components/Landingpage/Navbar';
+import Section1 from '../Components/Landingpage/Section1';
+import Section2 from '../Components/Landingpage/Section2';
+import Section3 from '../Components/Landingpage/Section3';
+import Section4 from '../Components/Landingpage/Section4';
+import Section5 from '../Components/Landingpage/Section5';
+import Section6 from '../Components/Landingpage/Section6';
+import Section7 from '../Components/Landingpage/Section7';
+import Footer from '../Components/Landingpage/Footer';
 const LandingPage = () => {
   return (
-    <div className='mt-4.25 md:mt-6.75 lg:mt-10'>
+    <div className='overflow-x-hidden'>
         <Navbar />
         <Section1 />
         <Section2 />
