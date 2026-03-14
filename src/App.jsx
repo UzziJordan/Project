@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import LandingPage from './Pages/LandingPage';
-import Waitlist from './Pages/Waitlist'
+import Waitlist from './Pages/Waitlist';
 
 
 const App = () => {
