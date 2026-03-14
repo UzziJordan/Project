@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaCheck } from "react-icons/fa";
-import Cardd2 from '../../Images/Cardd2.svg'
+import Cardd2 from '../../Images/cardd2.svg'
 import wave from '../../Images/wave.svg'
 import micc from '../../Images/micc.svg'
 
