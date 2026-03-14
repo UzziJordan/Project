@@ -1,5 +1,5 @@
 import React from 'react'
-import Card4 from '../../Images/Card4.svg'
+import Card4 from '../../Images/card4.svg'
 import universe from '../../Images/universe.svg'
 import reliable from '../../Images/reliable.svg'
 
