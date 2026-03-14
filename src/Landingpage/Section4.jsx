@@ -9,7 +9,6 @@ const Section4 = () => {
     <div>
         <div className='flex'>        
             <div>
-
                 <div>
                     <h1>Never Miss an Action Item</h1>
                     <p>Memo automatically extracts commitments, deadlines, and to-dos from your conversations turning follow-ups into a ready-to-use task list before the meeting even ends.</p>

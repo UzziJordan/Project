@@ -1,7 +1,6 @@
 import React from 'react'
 import line1 from '../Images/line1.svg'
 import line2 from '../Images/line2.svg'
-import line3 from '../Images/line3.svg'
 import step1 from '../Images/step1.svg'
 import step2 from '../Images/step2.svg'
 import step3 from '../Images/step3.svg'
