@@ -1,4 +1,6 @@
 import React from 'react'
+import { NavLink } from 'react-router-dom';
+
 import FeaturePills from "./FeaturePills";
 import MeetingCard from "./MeetingCard";
 
@@ -6,11 +8,11 @@ import MeetingCard from "./MeetingCard";
 const HeroSection = () => {
   return (
     <div className="lg:w-1/2 w-full bg-[#24426A] md:px-40 lg:px-20 text-geist text-[#FFFFFF] flex flex-col justify-center lg:justify-normal px-5 py-17.5">
-
+      <NavLink to="/">
       <h1 className="text-[30px] font-semibold text-audiowide">
         MEMO AI
       </h1>
-
+      </NavLink>
       <p className="bg-[#FFFFFF]/8 border-[#FFFFFF]/12 text-[#FFFFFF]/70 flex gap-2 h-8 w-65 border-2 text-[12px] font-medium py-2 items-center pl-4 mt-10 rounded-full">
         <p className='bg-[#4ADE80] h-2 w-2 rounded-full'> </p>
         AI-powered - No note-taking needed
