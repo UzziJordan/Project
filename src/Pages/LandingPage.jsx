@@ -11,15 +11,15 @@ import Footer from '../Components/Landingpage/Footer';
 const LandingPage = () => {
   return (
     <div className='overflow-x-hidden'>
-        <Navbar />
-        <Section1 />
-        <Section2 />
-        <Section3 />
-        <Section4 />
-        <Section5 />
-        <Section6 />
-        <Section7 />
-        <Footer />
+      <Navbar />
+      <Section1 />
+      <Section2 />
+      <Section3 />
+      <Section4 />
+      <Section5 />
+      <Section6 />
+      <Section7 />
+      <Footer />
     </div>
   )
 }

@@ -10,15 +10,16 @@ import ForgotPassword from './Pages/ForgotPassword';
 
 const App = () => {
   return (
-  <BrowserRouter>
-     <Routes>
+    <BrowserRouter>
+      
+      <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="Login" element={<LoginPage />} />
         <Route path="SignupPage" element={<SignupPage />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
-      </Routes>
-      
-  </BrowserRouter>
+      </Routes>  
+    
+    </BrowserRouter>
   )
 }
 
