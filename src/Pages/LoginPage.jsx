@@ -5,11 +5,11 @@ import LoginForm from "../Components/LoginPage/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row">
+    <div className="min-h-screen lg:h-256 flex flex-col lg:flex-row">
 
       <HeroSection />
 
-      <div className="lg:w-1/2 w-full bg-gray-100 flex items-center justify-center">
+      <div className="lg:w-1/2 w-[90vw] md:w-full flex items-start md:items-center lg:items-start justify-center">
         <LoginForm />
       </div>
 

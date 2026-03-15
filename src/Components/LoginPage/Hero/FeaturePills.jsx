@@ -2,18 +2,18 @@ import React from 'react'
 
 const FeaturePills = () => {
   return (
-    <div className="flex gap-3 mb-10 text-xs">
+    <div className="flex gap-3 mt-10 text-geist">
 
-      <span className="bg-white/10 px-4 py-2 rounded-full">
-        ⚡ 1-click recording
+      <span className="bg-[#FFFFFF]/7 border-2 border-[#FFFFFF]/10 text-[12px] px-4 py-2 rounded-full">
+        🎙️1-click recording
       </span>
 
-      <span className="bg-white/10 px-4 py-2 rounded-full">
-        🤖 AI transcription
+      <span className="bg-[#FFFFFF]/7 border-2 border-[#FFFFFF]/10 text-[12px] px-4 py-2 rounded-full">
+        ⚡ AI transcription
       </span>
 
-      <span className="bg-white/10 px-4 py-2 rounded-full">
-        ✨ Smart summaries
+      <span className="bg-[#FFFFFF]/7 border-2 border-[#FFFFFF]/10 text-[12px] px-4 py-2 rounded-full">
+        ✦ Smart summaries
       </span>
 
     </div>

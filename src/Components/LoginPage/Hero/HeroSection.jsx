@@ -5,25 +5,26 @@ import MeetingCard from "./MeetingCard";
 
 const HeroSection = () => {
   return (
-    <div className="lg:w-1/2 w-full bg-[#2E4C73] text-white flex flex-col justify-center px-20 py-20">
+    <div className="lg:w-1/2 w-full bg-[#24426A] md:px-40 lg:px-20 text-geist text-[#FFFFFF] flex flex-col justify-center lg:justify-normal px-5 py-17.5">
 
-      <h1 className="text-2xl font-semibold tracking-widest mb-6">
+      <h1 className="text-[30px] font-semibold text-audiowide">
         MEMO AI
       </h1>
 
-      <span className="bg-white/10 text-sm px-3 py-1 rounded-full w-fit mb-8">
+      <p className="bg-[#FFFFFF]/8 border-[#FFFFFF]/12 text-[#FFFFFF]/70 flex gap-2 h-8 w-65 border-2 text-[12px] font-medium py-2 items-center pl-4 mt-10 rounded-full">
+        <p className='bg-[#4ADE80] h-2 w-2 rounded-full'> </p>
         AI-powered - No note-taking needed
-      </span>
+      </p>
 
-      <h2 className="text-4xl font-serif leading-tight mb-6">
+      <h2 className="text-[48px] text-instrument-serif leading-tight mt-7">
         Your meetings,
         <br />
-        <span className="italic text-blue-200">
+        <span className="italic text-[#93C5FD]">
           finally remembered.
         </span>
       </h2>
 
-      <p className="text-sm text-blue-100 max-w-md mb-8">
+      <p className="text-[#FFFFFF] text-[16px] max-w-95 mt-5">
         Record any conversation. Memo transcribes it, extracts key
         decisions, and turns action items into tasks automatically.
       </p>
@@ -32,11 +33,36 @@ const HeroSection = () => {
 
       <MeetingCard />
 
-      <p className="text-xs text-blue-200 mt-6">
-        Trusted by 12,000+ teams worldwide
-      </p>
+      <div className='flex flex-row gap-3 mt-5'>
+        <div className="flex items-center">
+          <div className="w-8 h-8 rounded-full bg-linear-to-br from-[#60A5FA] to-[#3B82F6] flex items-center justify-center text-white font-semibold border border-white">
+              A
+          </div>
 
-    </div> 
+          <div className="-ml-3 w-8 h-8 rounded-full bg-linear-to-br from-[#34D399] to-[#10B981] flex items-center justify-center text-white font-semibold border border-white">
+              M
+          </div>
+
+          <div className="-ml-3 w-8 h-8 rounded-full bg-linear-to-br from-[#A78BFA] to-[#7C3AED] flex items-center justify-center text-white font-semibold border border-white">
+              R
+          </div>
+
+          <div className="-ml-3 w-8 h-8 rounded-full bg-linear-to-br from-[#FB923C] to-[#EA580C] flex items-center justify-center text-white font-semibold border border-white">
+              S
+          </div>
+        </div>
+
+        <div>
+          <p>★★★★★</p>
+          <p className="text-[13px] text-[#FFFFFF]/45">
+            Trusted by <span className='text-[#FFFFFF]/75'> 12,000+ teams </span> worldwide
+          </p>
+        </div>
+
+      </div>
+
+
+  </div> 
   )
 }
 
