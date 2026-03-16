@@ -83,9 +83,11 @@ const LoginForm = () => {
       
       {/* Sign In Button */}
       
-      <button className="w-full mt-6 py-3 rounded-xl text-white font-semibold bg-[#2828FA] hover:opacity-90 transition">
-        Sign in
-      </button>
+      <Link to="/dashboard">
+        <button className="w-full mt-6 py-3 rounded-xl text-white font-semibold bg-[#2828FA] hover:opacity-90 transition">
+          Sign in
+        </button>
+      </Link>
       
       {/* Security Badges */}
       
