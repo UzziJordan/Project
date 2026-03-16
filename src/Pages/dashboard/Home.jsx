@@ -7,17 +7,20 @@ import Searchbar from '../../Components/Dashboard/Searchbar';
 
 const Home = () => {
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col ">
+        <Searchbar />
 
-        <div className=" ">
-
-            <Searchbar />
-
+        <div className="py-2 px-17">
+            
             <StatsCards />
 
             <RecordBanner />
 
             <RecordList />
+
+            <p className='flex justify-center pt-20 text-gray-400 items-center'>
+                No Recording History 
+            </p>
 
         </div>
 

@@ -8,6 +8,8 @@ import ForgotPassword from './Pages/ForgotPassword';
 
 import DashboardLayout from './Pages/dashboard/DashboardLayout'
 import Home  from './Pages/dashboard/Home';
+import Library from './Pages/dashboard/Library';
+
 
 
 
@@ -24,6 +26,8 @@ const App = () => {
         <Route path="/dashboard" element={<DashboardLayout />}>
 
           <Route index element={<Home />} />
+          <Route path="library" element={<Library />} />
+
         </Route>
       </Routes>  
     
