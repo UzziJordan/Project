@@ -69,7 +69,7 @@ const ToDoList = () => {
             <div className='mt-8'>
                 <p className="text-gray-400 text-sm font-semibold mb-3">COMPLETED</p>
 
-                <div className="bg-white border hidden border-[#EBEBEB] rounded-xl p-6 flex justify-between items-center">
+                <div className="bg-white border hidden border-[#EBEBEB] rounded-xl p-6  justify-between items-center">
                 
                     <div className="flex items-start gap-3">
                     
