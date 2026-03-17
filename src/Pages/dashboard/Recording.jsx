@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./Recorder.css";
+
 
 function Recorder() {
   const [isRecording, setIsRecording] = useState(false);
@@ -24,7 +24,7 @@ function Recorder() {
     <div className="container">
       {!isRecording && (
         <>
-          <p className="status">• READY TO RECORD</p>
+          <p className="bg-[#E9E9FF] top">• READY TO RECORD</p>
 
           <div className="mic-button" onClick={startRecording}>
             🎤

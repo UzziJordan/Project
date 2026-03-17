@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from "react-router-dom";
 
 const RecordBanner = () => {
   return (
@@ -14,9 +15,13 @@ const RecordBanner = () => {
         </p>
       </div>
 
-      <button className="bg-white flex items-center gap-2 text-[#2828FA] px-5 py-3 rounded-lg font-medium">
-        <p className='w-4 h-4 rounded-full bg-[#2828FA]'> </p>Start Recording
-      </button>
+    
+      <Link to="recording">
+
+        <button className="bg-white flex items-center gap-2 text-[#2828FA] px-5 py-3 rounded-lg font-medium">
+          <p className='w-4 h-4 rounded-full bg-[#2828FA]'> </p>Start Recording
+        </button>
+      </Link>
 
     </div>
   )

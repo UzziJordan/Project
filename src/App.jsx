@@ -12,6 +12,7 @@ import Home  from './Pages/dashboard/Home';
 import Library from './Pages/dashboard/Library';
 import Settings from './Pages/dashboard/Settings';
 import ToDoList from './Pages/dashboard/ToDoList';
+import Recording from './Pages/dashboard/Recording'
 
 import TranscriptPage from './Pages/dashboard/TranscriptPage';
 import TranscriptTab from './Pages/dashboard/TranscriptTab';
@@ -34,6 +35,7 @@ const App = () => {
         <Route path="/dashboard" element={<DashboardLayout />}>
 
           <Route index element={<Home />} />
+          <Route path='recording' element={<Recording />} />
           <Route path="library" element={<Library />} />
           <Route path="settings" element={<Settings />} />
           <Route path="todo" element={<ToDoList />} />
