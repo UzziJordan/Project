@@ -16,7 +16,7 @@ const RecordHistory = () => {
             </div>
 
             {/* Row 1 */}
-            <div className=" grid grid-cols-5 items-center px-6 py-4 text-[#1F2937]">
+            <div className=" hidden grid-cols-5 items-center px-6 py-4 text-[#1F2937]">
                 <div className=" col-span-2 flex items-center text-[16px] font-medium  gap-3">
                     <div>
                         <img src={divrec} alt="" />

@@ -10,7 +10,7 @@ const TranscriptPage = () => {
 
 
         {/* Tabs */}
-        <div className="flex gap-3 mb-6">
+        <div className="flex mx-18 mt-8 gap-3 mb-6">
 
             <NavLink
                 to="/dashboard/transcript"
