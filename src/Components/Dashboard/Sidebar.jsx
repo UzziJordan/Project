@@ -52,7 +52,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="transcript"
+            to="/dashboard/transcript"
             className={({ isActive }) =>
               `px-3 py-2.5 flex items-center gap-3 rounded-lg cursor-pointer ${
                 isActive

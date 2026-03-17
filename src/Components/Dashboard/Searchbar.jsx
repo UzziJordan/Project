@@ -1,14 +1,30 @@
 import React from 'react'
+import { useLocation } from "react-router-dom";
 import { FiSearch, FiUpload, FiBell } from "react-icons/fi";
 import {  } from "react-icons/fi";
 
 
 const Searchbar = () => {
+
+    const location = useLocation();
+
+    const routeNames = {
+    "/dashboard": "Home",
+    "/dashboard/library": "Library",
+    "/dashboard/transcript": "Transcript",
+    "/dashboard/todo": "To-Do List",
+    "/dashboard/settings": "Settings",
+    "/dashboard/transcript/summary": "Summary",
+};
+
+const currentPage = routeNames[location.pathname] || "Home";
+
+    
   return (
     <div className='h-18 px-10 bg-white flex items-center justify-between border-b border-[#CCCCCC] '>
-        <div className='flex items-center gap-10'>
-            <div className=' text-[16px] font-semibold text-[#111827]'>
-                Home
+        <div className='flex items-center'>
+            <div className='text-[16px] w-28.5 font-semibold text-[#111827]'>
+                {currentPage}
             </div>
             
             <div className="w-105 max-w-full ">
