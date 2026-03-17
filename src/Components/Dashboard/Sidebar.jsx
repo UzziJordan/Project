@@ -52,7 +52,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/transcript"
+            to="transcript"
             className={({ isActive }) =>
               `px-3 py-2.5 flex items-center gap-3 rounded-lg cursor-pointer ${
                 isActive
@@ -66,7 +66,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/todo"
+            to="todo"
             className={({ isActive }) =>
               `px-3 py-2.5 flex items-center gap-3 rounded-lg cursor-pointer ${
                 isActive
@@ -80,7 +80,7 @@ const Sidebar = () => {
           </NavLink>
 
           <NavLink
-            to="/settings"
+            to="settings"
             className={({ isActive }) =>
               `px-3 py-2.5 flex items-center gap-3 rounded-lg cursor-pointer ${
                 isActive
