@@ -1,26 +1,26 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { Outlet } from "react-router-dom";
+import Sidebar from "../../Components/Dashboard/Sidebar";
 
-import { useState } from "react"
-import { Outlet } from "react-router-dom"
-import Sidebar from "../../Components/Dashboard/Sidebar"
-
-
+/**
+ * DashboardLayout Component
+ * Purpose: Provides a consistent layout for all dashboard pages, including a sidebar and content area.
+ */
 const DashboardLayout = () => {
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  return(
+    // --- RENDER ---
+    return (
+        <div className="flex h-screen text-geist">
+            {/* NAVIGATION SIDEBAR */}
+            <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-      <div className="flex h-screen text-geist">
+            {/* MAIN CONTENT AREA */}
+            <div className="bg-[#EFF2F9] h-screen flex-1 overflow-x-hidden w-full md:w-[85vw]">
+                <Outlet context={[isSidebarOpen, setIsSidebarOpen]} />
+            </div>
+        </div>
+    );
+};
 
-          <Sidebar/>
-
-
-          <div className="bg-[#EFF2F9] h-screen w-[85vw] overflow-x-hidden">
-              <Outlet/>
-          </div>
-
-      </div>
-
-  )
-}
-
-export default DashboardLayout
+export default DashboardLayout;

@@ -12,6 +12,7 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
     "Personal Notes",
   ];
 
+  // Toggle item in the list
   const toggleItem = (item, list, setList) => {
     if (list.includes(item)) {
       setList(list.filter((i) => i !== item));
@@ -20,6 +21,7 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
     }
   };
 
+  // Handle apply button click
   const handleApply = () => {
     onApply({ tags: selectedTags, folders: selectedFolders });
     onClose();
@@ -36,27 +38,22 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
         className="bg-white w-full max-w-md rounded-2xl p-6 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Title */}
-        <h2 className="text-center font-semibold text-lg mb-6">
-          Search Filter
-        </h2>
+        {/* Modal Title */}
+        <h2 className="text-center font-semibold text-lg mb-6">Search Filter</h2>
 
-        {/* TAGS */}
+        {/* Tags Section */}
         <div className="mb-6">
           <p className="text-sm font-medium mb-3">Tags</p>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => (
               <button
                 key={tag}
-                onClick={() =>
-                  toggleItem(tag, selectedTags, setSelectedTags)
-                }
-                className={`px-3 py-1.5 rounded-lg text-sm border transition
-                  ${
-                    selectedTags.includes(tag)
-                      ? "border-blue-600 text-blue-600 bg-blue-50"
-                      : "border-gray-200 text-gray-600"
-                  }`}
+                onClick={() => toggleItem(tag, selectedTags, setSelectedTags)}
+                className={`px-3 py-1.5 rounded-lg text-sm border transition ${
+                  selectedTags.includes(tag)
+                    ? "border-blue-600 text-blue-600 bg-blue-50"
+                    : "border-gray-200 text-gray-600"
+                }`}
               >
                 {tag}
               </button>
@@ -64,22 +61,19 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
           </div>
         </div>
 
-        {/* FOLDERS */}
+        {/* Folders Section */}
         <div className="mb-6">
           <p className="text-sm font-medium mb-3">Folder</p>
           <div className="flex flex-wrap gap-2">
             {folders.map((folder) => (
               <button
                 key={folder}
-                onClick={() =>
-                  toggleItem(folder, selectedFolders, setSelectedFolders)
-                }
-                className={`px-3 py-1.5 rounded-lg text-sm border transition
-                  ${
-                    selectedFolders.includes(folder)
-                      ? "border-blue-600 text-blue-600 bg-blue-50"
-                      : "border-gray-200 text-gray-600"
-                  }`}
+                onClick={() => toggleItem(folder, selectedFolders, setSelectedFolders)}
+                className={`px-3 py-1.5 rounded-lg text-sm border transition ${
+                  selectedFolders.includes(folder)
+                    ? "border-blue-600 text-blue-600 bg-blue-50"
+                    : "border-gray-200 text-gray-600"
+                }`}
               >
                 {folder}
               </button>
@@ -87,15 +81,15 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
           </div>
         </div>
 
-        {/* ACTIONS */}
+        {/* Action Buttons */}
         <div className="space-y-3">
           <button
             onClick={handleApply}
-            className="w-full py-3 rounded-lg text-white font-medium bg-gradient-to-r from-blue-600 to-indigo-500"
+            className="w-full py-3 rounded-lg text-white font-medium bg-linear-to-r from-blue-600 to-indigo-500"
           >
             Apply
           </button>
-
+          
           <button
             onClick={onClose}
             className="w-full py-3 rounded-lg border text-gray-600"

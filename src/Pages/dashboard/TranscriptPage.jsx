@@ -1,57 +1,63 @@
-import React from 'react'
+import React from 'react';
 import { NavLink, Outlet } from "react-router-dom";
 import Searchbar from '../../Components/Dashboard/Searchbar';
 
+/**
+ * TranscriptPage Component
+ * Purpose: Provides a tabbed interface for viewing transcripts, summaries, and action items of a recording.
+ */
 const TranscriptPage = () => {
-  return (
-    <div className='pt-20 text-geist'>
-        <Searchbar />
+    // --- RENDER ---
+    return (
+        <div className='pt-18 md:pt-20 text-geist'>
+            <Searchbar />
 
-
-
-        {/* Tabs */}
-        <div className="flex mx-18 mt-8 gap-3 mb-6">
-
-            <NavLink
-                to="/dashboard/transcript"
-                end
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg font-medium transition ${
-                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
-                    }`
-                }
+            {/* TAB NAVIGATION SECTION */}
+            <div className="flex flex-wrap mx-4 md:mx-10 lg:mx-18 mt-6 md:mt-8 gap-2 md:gap-3 mb-4 md:mb-6">
+                {/* Transcript Tab Link */}
+                <NavLink
+                    to="/dashboard/transcript"
+                    end
+                    className={({ isActive }) =>
+                        `px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition ${
+                            isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
+                        }`
+                    }
                 >
-                Transcript
-            </NavLink>
+                    Transcript
+                </NavLink>
 
-            <NavLink
-                to="/dashboard/transcript/summary"
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg font-medium transition ${
-                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
-                    }`
-                }
+                {/* Summary Tab Link */}
+                <NavLink
+                    to="/dashboard/transcript/summary"
+                    className={({ isActive }) =>
+                        `px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition ${
+                            isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
+                        }`
+                    }
                 >
-                Summary
-            </NavLink>
+                    Summary
+                </NavLink>
 
-            <NavLink
-                to="/dashboard/transcript/todo"
-                className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg font-medium transition ${
-                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
-                    }`
-                }
+                {/* To-Do Tab Link */}
+                <NavLink
+                    to="/dashboard/transcript/todo"
+                    className={({ isActive }) =>
+                        `px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition ${
+                            isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
+                        }`
+                    }
                 >
-                To-Do
-            </NavLink>
+                    To-Do
+                </NavLink>
+            </div>
+
+            {/* NESTED CONTENT SECTION */}
+            <div className="mx-4 md:mx-10 lg:mx-18">
+                <Outlet />
+            </div>
         </div>
+    );
+};
 
-        {/* Page Content */}
-        <Outlet />
-
-    </div>
-  )
-}
-
-export default TranscriptPage
+export default TranscriptPage;

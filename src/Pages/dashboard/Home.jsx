@@ -1,31 +1,38 @@
-import React from 'react'
+import React from 'react';
 import StatsCards from "../../Components/Dashboard/StatsCards";
 import RecordBanner from "../../Components/Dashboard/RecordBanner";
 import RecordList from "../../Components/Dashboard/RecordList";
 import Searchbar from '../../Components/Dashboard/Searchbar';
 
-
+/**
+ * Home Component
+ * Purpose: Main landing page of the dashboard providing an overview of statistics and recent activity.
+ */
 const Home = () => {
-  return (
-    <div className="flex  pt-20 flex-col ">
-        <Searchbar />
+    // --- RENDER ---
+    return (
+        <div className="flex pt-18 md:pt-20 flex-col ">
+            {/* SEARCH COMPONENT */}
+            <Searchbar />
 
-        <div className="py-2 px-17">
-            
-            <StatsCards />
+            {/* MAIN DASHBOARD CONTENT */}
+            <div className="py-4 md:py-2 px-4 md:px-10 lg:px-17">
+                {/* STATISTICS OVERVIEW */}
+                <StatsCards />
 
-            <RecordBanner />
+                {/* PROMOTIONAL BANNER */}
+                <RecordBanner />
 
-            <RecordList />
+                {/* RECENT RECORDINGS LIST */}
+                <RecordList />
 
-            <p className='flex justify-center pt-20 text-gray-400 items-center'>
-                No Recording History 
-            </p>
-
+                {/* EMPTY STATE FALLBACK */}
+                <p className='flex justify-center pt-10 md:pt-20 text-gray-400 items-center text-sm md:text-base'>
+                    No Recording History 
+                </p>
+            </div>
         </div>
+    );
+};
 
-
-    </div>  )
-}
-
-export default Home
+export default Home;
