@@ -16,8 +16,8 @@ const TranscriptPage = () => {
                 to="/dashboard/transcript"
                 end
                 className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg ${
-                    isActive ? "bg-gray-200" : "bg-gray-100"
+                    `px-4 py-2 rounded-lg font-medium transition ${
+                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
                     }`
                 }
                 >
@@ -27,12 +27,23 @@ const TranscriptPage = () => {
             <NavLink
                 to="/dashboard/transcript/summary"
                 className={({ isActive }) =>
-                    `px-4 py-2 rounded-lg ${
-                    isActive ? "bg-gray-200" : "bg-gray-100"
+                    `px-4 py-2 rounded-lg font-medium transition ${
+                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
                     }`
                 }
                 >
                 Summary
+            </NavLink>
+
+            <NavLink
+                to="/dashboard/transcript/todo"
+                className={({ isActive }) =>
+                    `px-4 py-2 rounded-lg font-medium transition ${
+                    isActive ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "bg-white border text-gray-500 hover:bg-gray-50"
+                    }`
+                }
+                >
+                To-Do
             </NavLink>
         </div>
 

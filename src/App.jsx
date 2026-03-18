@@ -17,6 +17,7 @@ import Recording from './Pages/dashboard/Recording'
 import TranscriptPage from './Pages/dashboard/TranscriptPage';
 import TranscriptTab from './Pages/dashboard/TranscriptTab';
 import SummaryTab from './Pages/dashboard/SummaryTab';
+import ToDoTab from './Pages/dashboard/ToDoTab';
 
 
 
@@ -42,7 +43,9 @@ const App = () => {
 
           <Route path="/dashboard/transcript" element={<TranscriptPage />}>
               <Route index element={<TranscriptTab />} />
-              <Route path="summary" element={<SummaryTab />} />          </Route>
+              <Route path="summary" element={<SummaryTab />} />
+              <Route path="todo" element={<ToDoTab />} />
+          </Route>
         </Route>
       </Routes>  
     

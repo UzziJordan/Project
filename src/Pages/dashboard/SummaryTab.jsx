@@ -1,95 +1,111 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Summary = () => {
+  const [recording, setRecording] = useState(null);
+
+  useEffect(() => {
+    const latest = localStorage.getItem('latestRecording');
+    if (latest) {
+      setRecording(JSON.parse(latest));
+    }
+  }, []);
+
+  if (!recording) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+        <p>No summary available.</p>
+        <p className="text-sm">Go to the recording page to start a new session.</p>
+      </div>
+    );
+  }
+
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins} min ${secs} sec`;
+  };
+
+  // Split summary into bullet points if it looks like multiple sentences
+  const summaryPoints = recording.summary
+    ? recording.summary.split(/[.!?]/).filter(s => s.trim().length > 5)
+    : ["No summary available."];
+
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 max-w-4xl mx-auto">
 
       {/* Header */}
-      <div className="bg-indigo-50 p-4 rounded-xl flex justify-between items-center">
+      <div className="bg-blue-50 p-6 rounded-2xl flex justify-between items-center border border-blue-100 shadow-sm">
         <div>
-          <h2 className="font-semibold text-lg">
-            Digital Marketing Meeting
+          <h2 className="font-bold text-2xl text-blue-900">
+            {recording.title}
           </h2>
-          <p className="text-sm text-gray-500">
-            Tue, 23 Aug · 35 min · 3 Speakers
+          <p className="text-sm text-blue-600 font-medium mt-1">
+            {recording.date} · {formatTime(recording.duration)} · 1 Speaker
           </p>
         </div>
 
-        <span className="text-xs bg-indigo-100 text-indigo-600 px-3 py-1 rounded-full">
-          ✦ AI Generated
+        <span className="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-full font-bold shadow-sm flex items-center gap-1">
+          <span className="animate-pulse">✦</span> AI Generated
         </span>
       </div>
 
       {/* Meeting Summary */}
-      <div className="bg-white rounded-xl border p-5">
-        <p className="font-semibold mb-3">Meeting Summary</p>
+      <div className="bg-white rounded-2xl border shadow-sm p-8">
+        <p className="font-bold text-xl mb-6 text-gray-800 border-b pb-4">Key Takeaways</p>
 
-        <ul className="space-y-3 text-sm">
-          <li className="flex gap-2">
-            <span className="text-blue-500">•</span>
-            Website Relaunch is the top priority for Q2 – new design must go live by end of April (target: April 30).
-          </li>
-
-          <li className="flex gap-2">
-            <span className="text-blue-500">•</span>
-            Content migration led by Sarah, on track to finish by April 15, followed immediately by testing phase.
-          </li>
-
-          <li className="flex gap-2">
-            <span className="text-blue-500">•</span>
-            Social media campaign assets (graphics + copy) due from John by March 20 – first batch to be shared in shared folder this week.
-          </li>
-
-          <li className="bg-green-100 px-2 py-1 rounded inline-block">
-            Website Relaunch is the top priority for Q2 – new design must go live by end of April (target: April 30).
-          </li>
+        <ul className="space-y-4">
+          {summaryPoints.map((point, index) => (
+            <li key={index} className="flex gap-4 items-start">
+              <span className="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 shrink-0">
+                {index + 1}
+              </span>
+              <p className="text-gray-700 leading-relaxed text-lg">
+                {point.trim()}.
+              </p>
+            </li>
+          ))}
         </ul>
+
+        {summaryPoints.length === 0 && (
+          <p className="text-gray-500 italic">No key takeaways could be extracted.</p>
+        )}
       </div>
 
-      {/* Two Cards */}
-      <div className="grid grid-cols-2 gap-6">
+      {/* Additional Stats/Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-        {/* Key Decisions */}
-        <div className="bg-white rounded-xl border p-4">
-          <p className="font-semibold mb-3">Key Decisions</p>
+        {/* Key Decisions (Simulated for Demo) */}
+        <div className="bg-white rounded-2xl border shadow-sm p-6">
+          <p className="font-bold text-lg mb-4 text-gray-800">Highlights</p>
+          <div className="space-y-3">
+            <div className="bg-green-50 text-green-700 p-3 rounded-xl text-sm font-medium border border-green-100">
+              ✓ Successfully captured {recording.duration} seconds of audio.
+            </div>
+            <div className="bg-purple-50 text-purple-700 p-3 rounded-xl text-sm font-medium border border-purple-100">
+              💡 Processed locally in-browser.
+            </div>
+          </div>
+        </div>
 
-          <ul className="space-y-2 text-sm">
-            <li>• Add buffer weeks to the ML pipeline timeline</li>
-            <li>• Combine technical + security reviews in one session</li>
-            <li>• Finalize onboarding flows — no further changes</li>
+        {/* Technical Details */}
+        <div className="bg-white rounded-2xl border shadow-sm p-6">
+          <p className="font-bold text-lg mb-4 text-gray-800">Processing Info</p>
+          <ul className="space-y-2 text-sm text-gray-600">
+            <li className="flex justify-between">
+              <span>Engine:</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">Web Speech API</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Privacy:</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">100% Client-side</span>
+            </li>
+            <li className="flex justify-between">
+              <span>Storage:</span>
+              <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">LocalStorage</span>
+            </li>
           </ul>
         </div>
 
-        {/* Open Questions */}
-        <div className="bg-white rounded-xl border p-4">
-          <p className="font-semibold mb-3">Open Questions</p>
-
-          <ul className="space-y-2 text-sm">
-            <li>• Add buffer weeks to the ML pipeline timeline</li>
-            <li>• Combine technical + security reviews in one session</li>
-            <li>• Finalize onboarding flows — no further changes</li>
-          </ul>
-        </div>
-
-      </div>
-
-      {/* Bottom List */}
-      <div className="bg-white rounded-xl border p-4">
-        <p className="font-semibold mb-3">Key Decisions</p>
-
-        <div className="space-y-2">
-          <div className="bg-gray-100 p-3 rounded-lg">
-            Add buffer weeks to the ML pipeline timeline
-          </div>
-
-          <div className="bg-gray-100 p-3 rounded-lg">
-            Combine technical + security reviews in one session
-          </div>
-
-          <div className="bg-gray-100 p-3 rounded-lg">
-            Finalize onboarding flows — no further changes
-          </div>
-        </div>
       </div>
 
     </div>
