@@ -4,7 +4,7 @@ import Searchbar from '../../Components/Dashboard/Searchbar';
 
 const TranscriptPage = () => {
   return (
-    <div >
+    <div className='pt-20 text-geist'>
         <Searchbar />
 
 

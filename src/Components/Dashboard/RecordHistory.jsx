@@ -1,25 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import { FiUpload, FiMoreHorizontal } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
-import divrec from '../../Images/divrec.svg'
+import divrec from '../../Images/divrec.svg';
 
-const RecordHistory = () => {
+
+
+const RecordHistory = ({ searchTerm = "" }) => {
+  // ================= STATE =================
   const [recordings, setRecordings] = useState([]);
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
+
   const navigate = useNavigate();
 
+  // ================= LOAD DATA =================
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem('recordings')) || [];
     setRecordings(data);
   }, []);
 
-  // ✅ Close dropdown when clicking outside
+  // ================= FILTER =================
+  const filteredRecordings = recordings.filter((rec) => {
+    const searchLower = searchTerm.toLowerCase();
+    return (
+      rec.title.toLowerCase().includes(searchLower) ||
+      (rec.transcript && rec.transcript.toLowerCase().includes(searchLower)) ||
+      (rec.summary && rec.summary.toLowerCase().includes(searchLower))
+    );
+  });
+
+  // ================= CLOSE DROPDOWN =================
   useEffect(() => {
-    const handleClickOutside = () => {
-      setOpenMenuId(null);
-    };
+    const handleClickOutside = () => setOpenMenuId(null);
 
     if (openMenuId !== null) {
       document.addEventListener("click", handleClickOutside);
@@ -30,20 +43,21 @@ const RecordHistory = () => {
     };
   }, [openMenuId]);
 
+  // ================= HELPERS =================
   const formatTime = (seconds) => {
     if (!seconds) return "00:00";
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-
     return `${mins.toString().padStart(2, '0')}:${secs
       .toString()
       .padStart(2, '0')}`;
   };
 
+  // ================= ACTIONS =================
   const handleDelete = (id, e) => {
     e.stopPropagation();
-    const confirmDelete = window.confirm("Delete this recording?");
-    if (!confirmDelete) return;
+
+    if (!window.confirm("Delete this recording?")) return;
 
     const updated = recordings.filter((rec) => rec.id !== id);
     setRecordings(updated);
@@ -74,8 +88,11 @@ const RecordHistory = () => {
     setOpenMenuId(openMenuId === rec.id ? null : rec.id);
   };
 
+  // ================= UI =================
   return (
-    <div className='px-18 mt-8 pb-10'>
+    <div className='px-6 mt-8 pb-10'>
+
+      {/* ================= TABLE ================= */}
       <div className="bg-white border-2 border-[#EBEBEB] rounded-xl overflow-hidden shadow-sm">
 
         {/* Header */}
@@ -87,40 +104,48 @@ const RecordHistory = () => {
         </div>
 
         {/* Rows */}
-        {recordings.length === 0 ? (
+        {filteredRecordings.length === 0 ? (
           <div className="p-10 text-center text-gray-400 text-sm">
-            <p className="mb-2">No recordings yet</p>
-            <button 
-              onClick={() => navigate('/dashboard/recording')}
-              className="text-blue-600 font-medium hover:underline"
-            >
-              Start your first recording →
-            </button>
+            <p className="mb-2">
+              {searchTerm
+                ? `No recordings found matching "${searchTerm}"`
+                : "No recordings yet"}
+            </p>
+
+            {!searchTerm && (
+              <button
+                onClick={() => navigate('/dashboard/recording')}
+                className="text-blue-600 font-medium hover:underline"
+              >
+                Start your first recording →
+              </button>
+            )}
           </div>
         ) : (
-          recordings.map((rec) => (
+          filteredRecordings.map((rec) => (
             <div
               key={rec.id}
               onClick={() => handleRowClick(rec)}
-              className="grid grid-cols-5 items-center px-6 py-4 text-[#1F2937] border-t hover:bg-gray-50 cursor-pointer transition"
+              className="grid grid-cols-5 items-center px-6 py-4 border-t hover:bg-gray-50 cursor-pointer transition"
             >
 
-              {/* Title */}
-              <div className="col-span-2 flex items-center text-[16px] font-semibold gap-3">
+              {/* TITLE */}
+              <div className="col-span-2 flex items-center gap-3 font-semibold">
                 <img src={divrec} alt="" className="w-8 h-8 opacity-80" />
                 <p className="truncate pr-4">{rec.title}</p>
               </div>
 
-              {/* Date */}
-              <div className='text-[14px] text-gray-500'>{rec.date}</div>
+              {/* DATE */}
+              <div className='text-sm text-gray-500'>{rec.date}</div>
 
-              {/* Duration */}
-              <div className='text-[14px] font-medium tabular-nums text-gray-600'>
+              {/* DURATION */}
+              <div className='text-sm font-medium tabular-nums text-gray-600'>
                 {formatTime(rec.duration)}
               </div>
 
-              {/* Tags + Actions */}
+              {/* TAG + ACTIONS */}
               <div className="flex items-center justify-between">
+
                 <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold uppercase tracking-wider">
                   {rec.tag || "Meeting"}
                 </span>
@@ -129,32 +154,36 @@ const RecordHistory = () => {
 
                   {/* SHARE */}
                   <button
-                    className="p-2 border rounded-lg hover:bg-white hover:shadow-sm transition"
                     onClick={(e) => handleShareClick(e, rec)}
+                    className="p-2 border rounded-lg hover:bg-white hover:shadow-sm"
                   >
-                    <FiUpload className="text-gray-500" />
+                    <FiUpload />
                   </button>
 
                   {/* MENU */}
                   <div className="relative">
                     <button
                       onClick={(e) => handleMenuClick(e, rec)}
-                      className="p-2 border rounded-lg hover:bg-white hover:shadow-sm transition"
+                      className="p-2 border rounded-lg hover:bg-white hover:shadow-sm"
                     >
-                      <FiMoreHorizontal className="text-gray-500" />
+                      <FiMoreHorizontal />
                     </button>
 
                     {openMenuId === rec.id && (
-                      <div className="absolute right-0 top-0 w-36 bg-white border rounded-lg shadow-xl z-10 py-1">
+                      <div className="absolute right-0 top-10 w-36 bg-white border rounded-lg shadow-xl z-20 py-1">
                         <button
                           onClick={(e) => handleDelete(rec.id, e)}
-                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
+                          className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
                           Delete
                         </button>
+
                         <button
-                          onClick={(e) => { e.stopPropagation(); handleRowClick(rec); }}
-                          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRowClick(rec);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50"
                         >
                           View Transcript
                         </button>
@@ -168,103 +197,149 @@ const RecordHistory = () => {
             </div>
           ))
         )}
-
       </div>
 
       {/* ================= MODAL ================= */}
       {showModal && selectedRecording && (
         <div
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-50"
           onClick={() => setShowModal(false)}
         >
           <div
-            className="bg-white w-full max-w-md rounded-2xl p-8 relative shadow-2xl animate-in fade-in zoom-in duration-200"
+            className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
 
-            {/* Close */}
+            {/* CLOSE */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
+              className="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
             >
               ✕
             </button>
 
-            {/* Title */}
-            <h2 className="text-2xl font-bold mb-1 text-gray-900">Share & Export</h2>
-            <p className="text-sm text-gray-500 mb-8">
+            {/* HEADER */}
+            <h2 className="text-lg font-semibold mb-1">Share & Export</h2>
+            <p className="text-sm text-gray-500 mb-6">
               {selectedRecording.title} • {formatTime(selectedRecording.duration)}
             </p>
 
-            {/* Options */}
-            <div className="space-y-3">
+            {/* OPTIONS */}
+<div className="space-y-3">
 
-              {/* Download Audio */}
-              <div
-                onClick={() => handleDownloadAudio(selectedRecording)}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
+  {/* Download Audio */}
+  <div
+    onClick={() => handleDownloadAudio(selectedRecording)}
+    className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
+  >
+    <div>
+      <p className="font-medium">Download Audio</p>
+      <p className="text-sm text-gray-500">Save recording file</p>
+    </div>
+    <span>›</span>
+  </div>
+
+  {/* Copy Summary */}
+  <div
+    onClick={() => {
+      navigator.clipboard.writeText(selectedRecording.summary || "No summary available");
+    }}
+    className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
+  >
+    <div>
+      <p className="font-medium">Copy Summary</p>
+      <p className="text-sm text-gray-500">Copy AI-generated summary</p>
+    </div>
+    <span>›</span>
+  </div>
+
+  {/* Download PDF (basic version) */}
+  <div
+    onClick={() => {
+      const content = `
+Title: ${selectedRecording.title}
+
+Summary:
+${selectedRecording.summary || "No summary"}
+
+Transcript:
+${selectedRecording.transcript || "No transcript"}
+      `;
+
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${selectedRecording.title}.txt`;
+      link.click();
+    }}
+    className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
+  >
+    <div>
+      <p className="font-medium">Download Transcript</p>
+      <p className="text-sm text-gray-500">Summary + transcript</p>
+    </div>
+    <span>›</span>
+  </div>
+
+  {/* Export Transcript */}
+  <div
+    onClick={() => {
+      const blob = new Blob(
+        [selectedRecording.transcript || "No transcript"],
+        { type: "text/plain" }
+      );
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${selectedRecording.title}-transcript.txt`;
+      link.click();
+    }}
+    className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
+  >
+    <div>
+      <p className="font-medium">Export Transcript</p>
+      <p className="text-sm text-gray-500">txt format</p>
+    </div>
+    <span>›</span>
+  </div>
+
+  {/* Open Audio Link */}
+  <div
+    onClick={() => window.open(selectedRecording.audioURL, "_blank")}
+    className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
+  >
+    <div>
+      <p className="font-medium">Open Audio</p>
+      <p className="text-sm text-gray-500">Play in new tab</p>
+    </div>
+    <span>›</span>
+  </div>
+
+</div>            {/* LINK */}
+            <div className="flex gap-2 mt-6">
+              <input
+                readOnly
+                value={selectedRecording.audioURL}
+                className="flex-1 px-3 py-2 border rounded-lg text-sm"
+              />
+              <button
+                onClick={() =>
+                  navigator.clipboard.writeText(selectedRecording.audioURL)
+                }
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
               >
-                <div>
-                  <p className="font-bold text-gray-800 group-hover:text-blue-700">Download Audio</p>
-                  <p className="text-sm text-gray-500">Save recording file locally</p>
-                </div>
-                <span className="text-gray-400 group-hover:text-blue-500">›</span>
-              </div>
-
-              <div 
-                onClick={() => {
-                  navigator.clipboard.writeText(selectedRecording.summary);
-                  alert("Summary copied to clipboard!");
-                }}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
-              >
-                <div>
-                  <p className="font-bold text-gray-800 group-hover:text-blue-700">Copy Summary</p>
-                  <p className="text-sm text-gray-500">Copy AI-generated summary</p>
-                </div>
-                <span className="text-gray-400 group-hover:text-blue-500">›</span>
-              </div>
-
-              <div className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-not-allowed opacity-60">
-                <div>
-                  <p className="font-bold text-gray-800">Download PDF (Coming Soon)</p>
-                  <p className="text-sm text-gray-500">Summary + transcript</p>
-                </div>
-                <span className="text-gray-400">›</span>
-              </div>
-
-            </div>
-
-            {/* Link */}
-            <div className="mt-8">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Internal Blob URL</p>
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  readOnly
-                  value={selectedRecording.audioURL}
-                  className="flex-1 px-3 py-2 bg-gray-50 border rounded-lg text-xs font-mono text-gray-500 outline-none"
-                />
-                <button
-                  onClick={() => {
-                    navigator.clipboard.writeText(selectedRecording.audioURL);
-                    alert("Link copied!");
-                  }}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-md shadow-blue-200"
-                >
-                  Copy
-                </button>
-              </div>
-              <p className="text-[10px] text-gray-400 mt-2 italic">
-                * Note: Blob URLs are session-specific and will expire on refresh.
-              </p>
+                Copy
+              </button>
             </div>
 
           </div>
         </div>
       )}
     </div>
-      )
-}
+  );
+};
 
-export default RecordHistory
+export default RecordHistory;

@@ -2,7 +2,7 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import LandingPage from './Pages/LandingPage';
-import Omboarding from './Pages/Omboarding';
+import Onboarding from './Pages/Onboarding';
 import LoginPage from './Pages/LoginPage';
 import SignupPage from './Pages/SignupPage';
 import ForgotPassword from './Pages/ForgotPassword';
@@ -28,7 +28,7 @@ const App = () => {
       
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="Omboarding" element={<Omboarding />} />
+        <Route path="Onboarding" element={<Onboarding />} />
         <Route path="Login" element={<LoginPage />} />
         <Route path="SignupPage" element={<SignupPage />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
@@ -38,6 +38,7 @@ const App = () => {
           <Route index element={<Home />} />
           <Route path='recording' element={<Recording />} />
           <Route path="library" element={<Library />} />
+          
           <Route path="settings" element={<Settings />} />
           <Route path="todo" element={<ToDoList />} />
 

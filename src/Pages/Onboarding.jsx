@@ -4,7 +4,7 @@ import { FiUser, FiRadio } from "react-icons/fi";
 
 import { Link } from 'react-router-dom';
 
-const Omboarding = () => {
+const Onboarding = () => {
   return (
     <div className="max-h-screen   lg:h-256 flex flex-col lg:flex-row text-geist">
         <div className='px-20 pt-8 w-1/2 bg-white'>
@@ -96,4 +96,4 @@ const Omboarding = () => {
   )
 }
 
-export default Omboarding
+export default Onboarding

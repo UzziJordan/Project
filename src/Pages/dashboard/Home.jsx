@@ -7,7 +7,7 @@ import Searchbar from '../../Components/Dashboard/Searchbar';
 
 const Home = () => {
   return (
-    <div className="flex flex-col ">
+    <div className="flex  pt-20 flex-col ">
         <Searchbar />
 
         <div className="py-2 px-17">

@@ -9,16 +9,16 @@ const DashboardLayout = () => {
 
   return(
 
-    <div className="flex h-screen text-geist">
+      <div className="flex h-screen text-geist">
 
-        <Sidebar/>
+          <Sidebar/>
 
 
-        <div className="bg-[#EFF2F9] h-screen w-[85vw] overflow-x-hidden">
-            <Outlet/>
-        </div>
+          <div className="bg-[#EFF2F9] h-screen w-[85vw] overflow-x-hidden">
+              <Outlet/>
+          </div>
 
-    </div>
+      </div>
 
   )
 }

@@ -11,7 +11,7 @@ const Settings = () => {
   const percentage = 25;
 
   return (
-    <div className=' text-geist '>
+    <div className=' text-geist  pt-20 '>
       <Searchbar />
 
       <div className='mx-18 flex flex-col mt-7 gap-7'>
