@@ -65,7 +65,7 @@ const Searchbar = () => {
                         {currentPage}
                     </div>
 
-                    <div className="w-[400px] max-w-full relative" ref={searchRef}>
+                    <div className="w-100 max-w-full relative" ref={searchRef}>
                         <div className="flex items-center bg-[#F9FAFB] border h-9 border-[#E5E7EB] gap-3 px-5 rounded-full focus-within:border-blue-400 transition">
                             <FiSearch className="text-[#374957] text-xl" />
                             <input
@@ -83,7 +83,7 @@ const Searchbar = () => {
 
                         {/* Search Results Dropdown */}
                         {showResults && searchTerm && (
-                            <div className="absolute top-11 left-0 w-full bg-white border rounded-xl shadow-xl overflow-hidden z-[60] animate-in fade-in slide-in-from-top-2 duration-200">
+                            <div className="absolute top-11 left-0 w-full bg-white border rounded-xl shadow-xl overflow-hidden z-60 animate-in fade-in slide-in-from-top-2 duration-200">
                                 {results.length > 0 ? (
                                     <div className="py-2">
                                         <div className="px-4 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
@@ -100,7 +100,7 @@ const Searchbar = () => {
                                                         <FiMic />
                                                     </div>
                                                     <div>
-                                                        <p className="text-sm font-semibold text-gray-800 truncate max-w-[200px]">{rec.title}</p>
+                                                        <p className="text-sm font-semibold text-gray-800 truncate max-w-50">{rec.title}</p>
                                                         <p className="text-[10px] text-gray-400 flex items-center gap-1">
                                                             <FiClock className="text-[9px]" /> {rec.date}
                                                         </p>
