@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import pauseicon from '../../Images/frrpause.svg'
+import recordicon from '../../Images/frmicrophone.svg'
+import stopicon from '../../Images/frrstop.svg'
 
 const VoiceMemoRecorder = () => {
   // ---------------- STATE ----------------
-  const [recordingState, setRecordingState] = useState("idle");
+  const [recordingState, setRecordingState] = useState("READY TO RECORD");
   const [recordingTime, setRecordingTime] = useState(0);
   const [waveformBars, setWaveformBars] = useState(Array(20).fill(20));
   const [audioURL, setAudioURL] = useState(null);
@@ -207,7 +210,7 @@ const VoiceMemoRecorder = () => {
 
     setTimeout(() => {
       setRecordingTime(0);
-      setRecordingState("idle");
+      setRecordingState("READY TO RECORD");
       navigate("/dashboard/transcript");
     }, 1500);
   };
@@ -224,27 +227,72 @@ const VoiceMemoRecorder = () => {
 
   // ---------------- UI ----------------
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="bg-white p-10 rounded-3xl shadow-xl w-full max-w-md flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="p-10 w-full max-w-md flex flex-col items-center">
 
-        <div className="mb-4 text-sm text-gray-500">
-          {recordingState.toUpperCase()}
-        </div>
+      <div
+        className={`mb-4 text-[18px] font-semibold flex items-center gap-2 rounded-4xl px-4 py-2
+          ${
+            recordingState === "recording"
+              ? "bg-[#D4D4FE] text-[#4C4CFB]"
+              : recordingState === "paused"
+              ? "bg-[#FED3D4] text-[#FC464A]"
+              : recordingState === "processing"
+              ? "bg-[#D4D4FE] text-[#4C4CFB]"
+              : "bg-[#E9E9FF] text-[#808080]"
+          }
+        `}
+      >
+        <div
+          className={`h-3 w-3 rounded-full ${
+            recordingState === "recording"
+              ? "bg-[#4C4CFB]"
+              : recordingState === "paused"
+              ? "bg-[#FC464A]"
+              : recordingState === "processing"
+              ? "bg-[#1D8D2E]"
+              : "bg-[#808080]"
+          }`}
+        ></div>
 
-        {/* BUTTON */}
+        {recordingState.toUpperCase()}
+      </div>        {/* BUTTON */}
         <button
           onClick={
-            recordingState === "idle"
+            recordingState === "READY TO RECORD"
               ? handleStartRecording
               : recordingState === "recording"
               ? handlePause
               : handleResume
           }
-          className="w-32 h-32 rounded-full bg-blue-600 text-white text-4xl flex items-center justify-center"
+          className="w-40 h-40 flex items-center justify-center"
         >
-          {recordingState === "recording" ? "⏸" : "🎤"}
+          <img
+            src={recordingState === "recording" ? pauseicon : recordicon}
+            alt="recorder button"
+            className={` rounded-full p-14.5 border-8 ${
+              recordingState === "recording"
+                ? "bg-[#FB2126] text-[#FC464A]"
+                : "bg-[#2828FA] text-[#4C4CFB]"
+            }`}
+          />
         </button>
 
+        <div className="mt-2 text-sm text-gray-500 text-center">
+          <p>
+            {recordingState === "READY TO RECORD" &&
+              "Press to Start Recording"}
+
+            {recordingState === "recording" &&
+              "Tap pause to pause · Stop to save"}
+
+            {recordingState === "paused" &&
+              "Tap resume to resume · Stop to save"}
+
+            {recordingState === "processing" &&
+              "Transcribing and summarizing your recording..."}
+          </p>
+        </div>
         {/* TIMER */}
         {(recordingState === "recording" ||
           recordingState === "paused") && (
@@ -267,13 +315,31 @@ const VoiceMemoRecorder = () => {
         </div>
 
         {/* CONTROLS */}
-        {recordingState !== "idle" && recordingState !== "processing" && (
-          <button
-            onClick={handleStop}
-            className="px-4 py-2 bg-red-100 text-red-600 rounded"
-          >
-            Stop
-          </button>
+        {recordingState !== "READY TO RECORD" && recordingState !== "processing" && (
+          <div className="flex gap-3 mt-2">
+
+            {/* PAUSE / RESUME */}
+            <button
+              onClick={
+                recordingState === "recording"
+                  ? handlePause
+                  : handleResume
+              }
+              className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded"
+            >
+              {recordingState === "recording" ? "Pause" : "Resume"}
+            </button>
+
+            {/* STOP */}
+            <button
+              onClick={handleStop}
+              className="px-4 py-2 bg-red-100 text-red-600 rounded"
+            >
+              Stop
+            </button>
+              
+          </div>
+          
         )}
 
         {/* AUDIO */}
@@ -288,6 +354,12 @@ const VoiceMemoRecorder = () => {
             </button>
           </>
         )}
+
+          <div className="text-center">
+            <p>memo will automatically transcribe your recording
+                and generate a summary when you stop.</p>
+          </div>
+
       </div>
     </div>
   );
