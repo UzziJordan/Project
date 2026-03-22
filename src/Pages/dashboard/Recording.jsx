@@ -259,14 +259,10 @@ const VoiceMemoRecorder = () => {
       </div>        
       
       {/* BUTTON */}
+      
         <button
-          onClick={
-            recordingState === "READY TO RECORD"
-              ? handleStartRecording
-              : recordingState === "recording"
-              ? handlePause
-              : handleResume
-          }
+          onClick={handleStartRecording}
+          disabled={recordingState !== "READY TO RECORD"}
           className="w-40 h-40 mt-10 flex items-center justify-center"
         >
           <img
