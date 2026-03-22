@@ -227,7 +227,7 @@ const VoiceMemoRecorder = () => {
 
   // ---------------- UI ----------------
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="flex items-center justify-center mt-5">
       <div className="p-10 w-full max-w-md flex flex-col items-center">
 
       <div
@@ -256,7 +256,9 @@ const VoiceMemoRecorder = () => {
         ></div>
 
         {recordingState.toUpperCase()}
-      </div>        {/* BUTTON */}
+      </div>        
+      
+      {/* BUTTON */}
         <button
           onClick={
             recordingState === "READY TO RECORD"
@@ -265,20 +267,20 @@ const VoiceMemoRecorder = () => {
               ? handlePause
               : handleResume
           }
-          className="w-40 h-40 flex items-center justify-center"
+          className="w-40 h-40 mt-10 flex items-center justify-center"
         >
           <img
-            src={recordingState === "recording" ? pauseicon : recordicon}
+            src={recordingState === "paused" ? pauseicon : recordicon}
             alt="recorder button"
-            className={` rounded-full p-14.5 border-8 ${
-              recordingState === "recording"
-                ? "bg-[#FB2126] text-[#FC464A]"
-                : "bg-[#2828FA] text-[#4C4CFB]"
-            }`}
+            className={`rounded-full p-14.5 border-8 ${
+            recordingState === "paused"
+              ? "bg-[#FB2126] text-[#FC464A]"
+              : "bg-[#2828FA] text-[#4C4CFB]"
+          }`}
           />
         </button>
 
-        <div className="mt-2 text-sm text-gray-500 text-center">
+        <div className="mt-10 text-sm text-[#555555] font-semibold text-[16px] text-center">
           <p>
             {recordingState === "READY TO RECORD" &&
               "Press to Start Recording"}
@@ -293,21 +295,22 @@ const VoiceMemoRecorder = () => {
               "Transcribing and summarizing your recording..."}
           </p>
         </div>
+
         {/* TIMER */}
         {(recordingState === "recording" ||
           recordingState === "paused") && (
-          <div className="text-2xl font-mono mt-4">
+          <div className="text-2xl mt-4 mb-0">
             {formatTime(recordingTime)}
           </div>
         )}
 
         {/* WAVEFORM */}
-        <div className="w-full bg-gray-50 rounded-2xl p-4 my-4">
+        <div className="w-full bg-[#FFFFFF] rounded-2xl p-4 mt-5">
           <div className="flex gap-1 h-12 items-center justify-center">
             {waveformBars.map((h, i) => (
               <div
                 key={i}
-                className="w-1.5 bg-blue-500 rounded-full"
+                className="w-1.5 bg-[#B8B8FD] rounded-full"
                 style={{ height: `${Math.max(10, h)}%` }}
               />
             ))}
@@ -316,7 +319,7 @@ const VoiceMemoRecorder = () => {
 
         {/* CONTROLS */}
         {recordingState !== "READY TO RECORD" && recordingState !== "processing" && (
-          <div className="flex gap-3 mt-2">
+          <div className="flex gap-3 mt-5">
 
             {/* PAUSE / RESUME */}
             <button
@@ -325,39 +328,32 @@ const VoiceMemoRecorder = () => {
                   ? handlePause
                   : handleResume
               }
-              className="px-4 py-2 bg-yellow-100 text-yellow-700 rounded"
+              className="px-5 py-2 text-[16px] flex items-center gap-2 font-semibold bg-[#FFFFFF] text-[#2B2B2B] border border-[#2B2B2B] rounded-xl"
             >
+              {recordingState === "recording" ? 
+              <img className="p-1 size-4 bg-[#2B2B2B] rounded-full" src={pauseicon} alt="" /> : 
+              <img className="p-1 size-4 bg-[#2828FA] rounded-full" src={recordicon} alt="" /> }
+              
               {recordingState === "recording" ? "Pause" : "Resume"}
             </button>
 
             {/* STOP */}
             <button
               onClick={handleStop}
-              className="px-4 py-2 bg-red-100 text-red-600 rounded"
+              className="px-5 py-2 text-[16px] flex items-center gap-2 font-semibold bg-[#FED3D4] text-[#FB2126] rounded-xl"
             >
-              Stop
+              <img className="p-1 size-6" src={stopicon} alt="" />
+              Stop & Save
             </button>
               
           </div>
           
         )}
 
-        {/* AUDIO */}
-        {audioURL && (
-          <>
-            <audio controls src={audioURL} className="w-full mt-4" />
-            <button
-              onClick={handleDownload}
-              className="mt-2 w-full bg-blue-600 text-white py-2 rounded"
-            >
-              Download
-            </button>
-          </>
-        )}
-
-          <div className="text-center">
-            <p>memo will automatically transcribe your recording
-                and generate a summary when you stop.</p>
+          <div className="text-center font-semibold mt-5 text-[#808080] text-[13px] ">
+            <p>Memo will automatically transcribe your recording
+              and generate a summary when you stop.
+            </p>
           </div>
 
       </div>
