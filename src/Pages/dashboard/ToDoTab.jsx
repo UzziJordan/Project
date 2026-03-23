@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { FiCheckCircle, FiCircle, FiCalendar, FiPlus } from "react-icons/fi";
+import { FiCheckCircle, FiCircle, FiCalendar, FiPlus, FiClock } from "react-icons/fi";
+import { databases } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID } from '../../lib/databaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 /**
  * ToDoTab Component
@@ -9,95 +12,146 @@ const ToDoTab = () => {
     // --- STATE AND HOOKS ---
     const [recording, setRecording] = useState(null);
     const [todos, setTodos] = useState([]);
+    const navigate = useNavigate();
 
     // --- SIDE EFFECTS ---
     useEffect(() => {
         const latest = localStorage.getItem('latestRecording');
         if (latest) {
-            const parsed = JSON.parse(latest);
-            setRecording(parsed);
-            setTodos(parsed.todos || []);
+            try {
+                const parsed = JSON.parse(latest);
+                setRecording(parsed);
+                // Ensure todos is an array
+                const rawTodos = parsed.todos || [];
+                // If it's a string (AI might return it as such), try to parse it
+                if (typeof rawTodos === 'string') {
+                    try {
+                        setTodos(JSON.parse(rawTodos));
+                    } catch (e) {
+                        setTodos([]);
+                    }
+                } else {
+                    setTodos(rawTodos);
+                }
+            } catch (e) {
+                console.error("Error parsing latestRecording:", e);
+            }
         }
     }, []);
 
     // --- HELPERS ---
-    const formatTime = (seconds) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins} min ${secs} sec`;
+    const formatDuration = (seconds) => {
+        if (!seconds) return "0 sec";
+
+        const sec = Math.floor(seconds);
+        const mins = Math.floor(sec / 60);
+        const hrs = Math.floor(mins / 60);
+
+        if (sec < 60) return `${sec} sec`;
+        if (mins < 60) return `${mins} min`;
+
+        const remainingMins = mins % 60;
+        return `${hrs}h ${remainingMins}min`;
+    };
+
+    const formatFullDate = (date) => {
+        if (!date) return "Unknown date";
+
+        const d = new Date(date);
+
+        return d.toLocaleString("en-GB", {
+            weekday: "short",   // Tue
+            day: "2-digit",     // 23
+            month: "short",     // Aug
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,      // 19:26:54
+        });
     };
 
     const pendingTodos = todos.filter(t => !t.completed);
     const completedTodos = todos.filter(t => t.completed);
 
     // --- HANDLERS ---
-    const toggleTodo = (index) => {
+    const toggleTodo = async (index) => {
         const newTodos = [...todos];
         newTodos[index].completed = !newTodos[index].completed;
         setTodos(newTodos);
-        
-        // Update recording in localStorage
+
+        // Update recording state
         const updatedRecording = { ...recording, todos: newTodos };
         setRecording(updatedRecording);
+
+        // Update localStorage
         localStorage.setItem('latestRecording', JSON.stringify(updatedRecording));
-        
-        // Update in recordings list as well
-        const recordings = JSON.parse(localStorage.getItem('recordings')) || [];
-        const updatedRecordings = recordings.map(r => r.id === recording.id ? updatedRecording : r);
-        localStorage.setItem('recordings', JSON.stringify(updatedRecordings));
+
+        // Update Appwrite Database if we have an ID
+        if (recording.$id) {
+            try {
+                await databases.updateDocument(
+                    DATABASE_ID,
+                    RECORDINGS_COLLECTION_ID,
+                    recording.$id,
+                    { todos: JSON.stringify(newTodos) }
+                );
+            } catch (error) {
+                console.error("Error updating Appwrite todos:", error);
+            }
+        }
     };
 
-    // --- RENDER HELPERS ---
+    // --- RENDER ---
     if (!recording) {
         return (
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">
                 <p>No recording selected.</p>
-                <p className="text-sm">Go to the recording page to start a new session.</p>
+                <p className="text-sm">Go to the library to select a recording.</p>
             </div>
         );
     }
 
-    // --- MAIN RENDER ---
     return (
-        <div className="p-6 space-y-6 max-w-4xl mx-auto pb-20">
-            {/* HEADER SECTION */}
-            <div className="bg-indigo-50 p-6 rounded-2xl flex justify-between items-center border border-indigo-100 shadow-sm">
+        <div className="space-y-6 text-geist">
+            {/* UNIFIED HEADER SECTION */}
+            <div className="bg-[#EAEAFC] p-6 rounded-2xl flex justify-between items-center">
                 <div>
-                    <h2 className="font-bold text-2xl text-indigo-900">
-                        Action Items & To-Dos
+                    <h2 className="font-extrabold text-[22px] text-[#000000]">
+                        {recording.title}
                     </h2>
-                    <p className="text-sm text-indigo-600 font-medium mt-1">
-                        {recording.title} · {formatTime(recording.duration)}
-                    </p>
+                    
+                    <p className="text-[16px] text-[#555555] mt-1 flex items-center gap-2 flex-wrap">
+                        {/* DATE */}
+                        <span className="flex items-center gap-1">
+                            <FiCalendar className="text-[#555555]" />
+                            {formatFullDate(recording.date)}
+                        </span>
+
+                        <span>·</span>
+
+                        {/* DURATION */}
+                        <span className="flex items-center gap-1">
+                            <FiClock className="text-[#555555]" />
+                            {formatDuration(recording.duration)}
+                        </span>
+
+                        <span>·</span>
+
+                        {/* PROGRESS */}
+                        <span className="text-indigo-600 font-bold">
+                            {completedTodos.length} / {todos.length} Completed
+                        </span>
+                    </p>                
                 </div>
 
-                <div className="flex flex-col items-end gap-1">
-                    <span className="text-[10px] bg-indigo-600 text-white px-3 py-1 rounded-full font-bold uppercase tracking-wider">
-                        AI Extracted
-                    </span>
-                    <p className="text-xs text-indigo-400 font-bold">
-                        {completedTodos.length} / {todos.length} COMPLETED
-                    </p>
-                </div>
-            </div>
-
-            {/* PROGRESS SECTION */}
-            <div className="bg-white p-4 rounded-xl border shadow-sm">
-                <div className="flex justify-between text-xs font-bold text-gray-400 mb-2 uppercase tracking-widest">
-                    <span>Overall Progress</span>
-                    <span className="text-indigo-600">{todos.length > 0 ? Math.round((completedTodos.length / todos.length) * 100) : 0}%</span>
-                </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                        className="h-full bg-indigo-600 transition-all duration-500" 
-                        style={{ width: `${todos.length > 0 ? (completedTodos.length / todos.length) * 100 : 0}%` }}
-                    ></div>
-                </div>
+                <span className="hidden md:flex text-[14px] bg-white text-[#2828FA] px-4 py-1.5 rounded-full font-bold items-center gap-1 shadow-sm">
+                    <span className="animate-pulse">✦</span> AI Generated
+                </span>
             </div>
 
             {/* PENDING TASKS SECTION */}
             <div className="space-y-4">
-                <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+                <h3 className="text-sm font-bold text-gray-400 uppercase flex items-center gap-2">
                     Pending Tasks <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md text-[10px]">{pendingTodos.length}</span>
                 </h3>
                 
@@ -118,9 +172,9 @@ const ToDoTab = () => {
                                 <FiCircle />
                             </div>
                             <div className="flex-1">
-                                <p className="text-gray-800 font-medium">{todo.task}</p>
+                                <p className="text-gray-800 font-medium">{todo.task || todo.text}</p>
                                 <div className="flex items-center gap-3 mt-1 text-xs text-gray-400">
-                                    <span className="bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded font-bold uppercase text-[9px]">High Priority</span>
+                                    <span className="bg-indigo-50 text-indigo-500 px-2 py-0.5 rounded font-bold uppercase text-[9px]">AI Identified</span>
                                     <span>•</span>
                                     <span className="flex items-center gap-1 italic">
                                         <FiCalendar className="text-[10px]" /> Suggested: ASAP
@@ -149,7 +203,7 @@ const ToDoTab = () => {
                                 <FiCheckCircle />
                             </div>
                             <div className="flex-1">
-                                <p className="text-gray-500 font-medium line-through">{todo.task}</p>
+                                <p className="text-gray-500 font-medium line-through">{todo.task || todo.text}</p>
                             </div>
                         </div>
                     ))}
@@ -157,7 +211,10 @@ const ToDoTab = () => {
             </div>
 
             {/* ACTION SECTION */}
-            <button className="w-full py-4 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold text-sm hover:border-indigo-300 hover:text-indigo-500 transition flex items-center justify-center gap-2">
+            <button 
+                onClick={() => navigate("/dashboard/todo")} 
+                className="w-full py-4 border-2 border-dashed border-gray-200 rounded-xl text-gray-400 font-bold text-sm hover:border-indigo-300 hover:text-indigo-500 transition flex items-center justify-center gap-2"
+            >
                 <FiPlus /> Add Manual Task
             </button>
         </div>

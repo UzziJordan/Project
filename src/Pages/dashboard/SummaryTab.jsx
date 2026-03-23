@@ -69,7 +69,7 @@ const Summary = () => {
             hour12: false,      // 19:26:54
         });
     };
-    
+
 
     // --- MAIN RENDER ---
     return (
@@ -137,34 +137,34 @@ const Summary = () => {
             {/* STATS AND DETAILS GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Highlights Card */}
-                <div className="bg-white rounded-2xl border shadow-sm p-6">
-                    <p className="font-bold text-lg mb-4 text-gray-800">Highlights</p>
+                <div className="bg-white text-[18px] rounded-2xl border border-[#EBEBEB] p-6">
+                    <p className="font-bold text-[20px] mb-4 text-[#2B2B2B]">Highlights</p>
                     
-                    <div className="space-y-3">
-                        <div className="bg-green-50 text-green-700 p-3 rounded-xl text-sm font-medium border border-green-100">
+                    <div className="space-y-3 text-[#2B2B2B]">
+                        <div className="p-3">
                             ✓ Successfully captured {formatDuration(recording.duration)} of audio.
                         </div>
-                        <div className="bg-purple-50 text-purple-700 p-3 rounded-xl text-sm font-medium border border-purple-100">
+                        <div className="p-3">
                             💡 Processed locally in-browser.
                         </div>
                     </div>
                 </div>
 
                 {/* Technical Info Card */}
-                <div className="bg-white rounded-2xl border shadow-sm p-6">
-                    <p className="font-bold text-lg mb-4 text-gray-800">Processing Info</p>
-                    <ul className="space-y-2 text-sm text-gray-600">
+                <div className="bg-white rounded-2xl text-[16px] borderborder-[#EBEBEB] text-[#2B2B2B] p-6">
+                    <p className="font-bold text-[20px] mb-4">Processing Info</p>
+                    <ul className="space-y-2 ">
                         <li className="flex justify-between">
                             <span>Engine:</span>
-                            <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">Web Speech API</span>
+                            <span className="font-mono px-2 py-0.5 rounded">Web Speech API</span>
                         </li>
                         <li className="flex justify-between">
                             <span>Privacy:</span>
-                            <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">100% Client-side</span>
+                            <span className="font-mono px-2 py-0.5 rounded">100% Client-side</span>
                         </li>
                         <li className="flex justify-between">
                             <span>Storage:</span>
-                            <span className="font-mono text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">Appwrite</span>
+                            <span className="font-mono px-2 py-0.5 rounded font-bold">Appwrite</span>
                         </li>
                     </ul>
                 </div>
