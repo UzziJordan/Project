@@ -11,11 +11,17 @@ import { PROFILE_BUCKET_ID } from "../../lib/databaseConfig";
 const Settings = () => {
 
     // --- STATE AND HOOKS ---
-    const [enabled, setEnabled] = useState(false);
     const [user, setUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
     const [uploading, setUploading] = useState(false);
     const [profileUrl, setProfileUrl] = useState(profileimg);
+
+    // Individual states for toggles
+    const [dailyReminder, setDailyReminder] = useState(false);
+    const [weeklyDigest, setWeeklyDigest] = useState(false);
+    const [missedTodos, setMissedTodos] = useState(false);
+    const [speakerLabels, setSpeakerLabels] = useState(true);
+    const [timestamps, setTimestamps] = useState(true);
 
     const fileInputRef = useRef(null);
 
@@ -68,6 +74,9 @@ const Settings = () => {
             // 3. Update local state
             const url = storage.getFileView(PROFILE_BUCKET_ID, response.$id);
             setProfileUrl(url.toString());
+
+            // 4. Notify other components (like Sidebar) to refresh
+            window.dispatchEvent(new Event('profileUpdate'));
             
             alert("Profile picture updated successfully!");
         } catch (error) {
@@ -206,13 +215,13 @@ const Settings = () => {
                         </div>
 
                         <button
-                            onClick={() => setEnabled(!enabled)}
+                            onClick={() => setDailyReminder(!dailyReminder)}
                             className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-300
-                                ${enabled ? "bg-blue-500" : "bg-gray-300"}`}
+                                ${dailyReminder ? "bg-blue-500" : "bg-gray-300"}`}
                         >
                             <div
                                 className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300
-                                    ${enabled ? "translate-x-6" : "translate-x-0"}`}
+                                    ${dailyReminder ? "translate-x-6" : "translate-x-0"}`}
                             />
                         </button>
                     </div>
@@ -229,13 +238,13 @@ const Settings = () => {
                         </div>
 
                         <button
-                            onClick={() => setEnabled(!enabled)}
+                            onClick={() => setWeeklyDigest(!weeklyDigest)}
                             className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-300
-                                ${enabled ? "bg-blue-500" : "bg-gray-300"}`}
+                                ${weeklyDigest ? "bg-blue-500" : "bg-gray-300"}`}
                         >
                             <div
                                 className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300
-                                    ${enabled ? "translate-x-6" : "translate-x-0"}`}
+                                    ${weeklyDigest ? "translate-x-6" : "translate-x-0"}`}
                             />
                         </button>
                     </div>
@@ -252,13 +261,13 @@ const Settings = () => {
                         </div>
 
                         <button
-                            onClick={() => setEnabled(!enabled)}
+                            onClick={() => setMissedTodos(!missedTodos)}
                             className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-300
-                                ${enabled ? "bg-blue-500" : "bg-gray-300"}`}
+                                ${missedTodos ? "bg-blue-500" : "bg-gray-300"}`}
                         >
                             <div
                                 className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300
-                                    ${enabled ? "translate-x-6" : "translate-x-0"}`}
+                                    ${missedTodos ? "translate-x-6" : "translate-x-0"}`}
                             />
                         </button>
                     </div>
@@ -290,13 +299,13 @@ const Settings = () => {
                         </p>
 
                         <button
-                            onClick={() => setEnabled(!enabled)}
+                            onClick={() => setSpeakerLabels(!speakerLabels)}
                             className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-300
-                                ${enabled ? "bg-blue-500" : "bg-gray-300"}`}
+                                ${speakerLabels ? "bg-blue-500" : "bg-gray-300"}`}
                         >
                             <div
                                 className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300
-                                    ${enabled ? "translate-x-6" : "translate-x-0"}`}
+                                    ${speakerLabels ? "translate-x-6" : "translate-x-0"}`}
                             />
                         </button>
                     </div>
@@ -307,13 +316,13 @@ const Settings = () => {
                         </p>
 
                         <button
-                            onClick={() => setEnabled(!enabled)}
+                            onClick={() => setTimestamps(!timestamps)}
                             className={`w-12 h-6 flex items-center rounded-full p-1 transition-all duration-300
-                                ${enabled ? "bg-blue-500" : "bg-gray-300"}`}
+                                ${timestamps ? "bg-blue-500" : "bg-gray-300"}`}
                         >
                             <div
                                 className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-all duration-300
-                                    ${enabled ? "translate-x-6" : "translate-x-0"}`}
+                                    ${timestamps ? "translate-x-6" : "translate-x-0"}`}
                             />
                         </button>
                     </div>

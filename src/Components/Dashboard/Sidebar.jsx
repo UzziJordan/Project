@@ -46,6 +46,10 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     };
 
     fetchUser();
+
+    // Listen for profile updates from Settings
+    window.addEventListener('profileUpdate', fetchUser);
+    return () => window.removeEventListener('profileUpdate', fetchUser);
   }, []);
 
   useEffect(() => {
