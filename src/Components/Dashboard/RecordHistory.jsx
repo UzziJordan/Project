@@ -175,22 +175,22 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= UI =================
   return (
-    <div className='px-6 mt-2 pb-10'>
+    <div className='px-4 md:px-6 mt-2 pb-10'>
 
       
-      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden shadow-sm">
 
         {/* HEADER */}
-        <div className="grid grid-cols-5 px-6 py-3 bg-[#EFF2F9] border border-[#EBEBEB] text-[14px] font-semibold text-[#808080]">
-          <div className="col-span-2">TITLE</div>
-          <div>DATE</div>
-          <div>DURATION</div>
-          <div>TAGS</div>
+        <div className="grid grid-cols-2 md:grid-cols-5 px-4 md:px-6 py-3 bg-[#EFF2F9] border-b border-[#EBEBEB] text-[12px] md:text-[14px] font-semibold text-[#808080]">
+          <div className="col-span-1 md:col-span-2">TITLE</div>
+          <div className="hidden md:block">DATE</div>
+          <div className="hidden md:block">DURATION</div>
+          <div className="text-right md:text-left">TAGS / ACTIONS</div>
         </div>
 
         {/* CONTENT */}
         {loading ? (
-          <div className="p-10 text-center text-gray-400 text-sm">Loading recordings...</div>
+          <div className="p-10 text-center text-gray-400 text-sm italic">Loading recordings...</div>
         ) : filteredRecordings.length === 0 ? (
           
           <div className="p-10 text-center text-gray-400 text-sm">
@@ -216,55 +216,63 @@ const RecordHistory = ({ searchTerm = "" }) => {
             <div
               key={rec.$id}
               onClick={() => handleRowClick(rec)}
-              className="grid grid-cols-5 items-center px-6 py-4 hover:bg-gray-50 cursor-pointer transition"
+              className="grid grid-cols-2 md:grid-cols-5 items-center px-4 md:px-6 py-4 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 cursor-pointer transition"
             >
 
               {/* TITLE */}
-              <div className="col-span-2 flex items-center gap-3 font-semibold">
-                <img src={divrec} alt="record icon" className="w-8 h-8 opacity-80" />
-                <p className="truncate text-[#1F2937] text-[16px] font-medium pr-4">{rec.title || "Untitled Recording"}</p>
+              <div className="col-span-1 md:col-span-2 flex items-center gap-2 md:gap-3 font-semibold">
+                <img src={divrec} alt="record icon" className="w-6 h-6 md:w-8 md:h-8 opacity-80 shrink-0" />
+                <div className="truncate">
+                  <p className="truncate text-[#1F2937] text-[14px] md:text-[16px] font-medium pr-2">
+                    {rec.title || "Untitled Recording"}
+                  </p>
+                  {/* Show date on mobile title as subtext */}
+                  <p className="md:hidden text-[10px] text-gray-400 font-normal">
+                    {formatDate(rec.date)} • {formatTime(rec.duration || 0)}
+                  </p>
+                </div>
               </div>
 
-              {/* DATE */}
-              <div className='text-[14px] text-[#1F2937]'>
+              {/* DATE - Hidden on mobile */}
+              <div className='hidden md:block text-[14px] text-[#1F2937]'>
                 {formatDate(rec.date)}
               </div>
 
-              {/* DURATION */}
-              <div className='text-[14px] text-[#1F2937]'>
+              {/* DURATION - Hidden on mobile */}
+              <div className='hidden md:block text-[14px] text-[#1F2937]'>
                 {formatTime(rec.duration || 0)}
               </div>
 
               {/* TAG + ACTIONS */}
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-end md:justify-between gap-2">
 
                 <span
-                  className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getTagStyles(
+                  className={`hidden sm:inline-block px-2 md:px-3 py-1 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider ${getTagStyles(
                     rec.tag
                   )}`}
                 >
                   {rec.tag || "Meeting"}
                 </span>
                 
-                <div className="flex gap-2">
+                <div className="flex gap-1 md:gap-2">
                   
                   <button
                     onClick={(e) => handleShareClick(e, rec)}
-                    className="p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
+                    className="p-1.5 md:p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
                   >
-                    <FiUpload />
+                    <FiUpload size={16} />
                   </button>
                   
                   <div className="relative">
                     <button
                       onClick={(e) => handleMenuClick(e, rec)}
-                      className="p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
+                      className="p-1.5 md:p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
                     >
-                      <FiMoreHorizontal />
+                      <FiMoreHorizontal size={16} />
                     </button>
                     
                     {openMenuId === rec.$id && (
-                      <div className="absolute right-0 top-10 w-36 bg-white border rounded-lg shadow-xl z-20 py-1">
+                      <div className="absolute right-0 top-10 w-36 bg-white border border-gray-200 rounded-lg shadow-xl z-20 py-1">
 
                         <button
                           onClick={(e) => handleDelete(rec, e)}

@@ -5,6 +5,12 @@ import playi from '../../Images/playi.svg';
 import { databases } from '../../lib/appwrite';
 import { DATABASE_ID, RECORDINGS_COLLECTION_ID } from '../../lib/databaseConfig';
 
+import audioi from '../../Images/audio.svg';
+import linkk from '../../Images/linkk.svg'
+import pdf from '../../Images/pdf.svg'
+import summaryi from '../../Images/summary.svg'
+import transcripti from '../../Images/transcript.svg'
+
 /**
  * TranscriptTab Component
  * Purpose: Displays the full transcript of a recording with playback controls, sharing, and renaming options.
@@ -271,7 +277,7 @@ const TranscriptTab = () => {
 
 
                 {/* RIGHT PANEL */}
-                <div className="bg-white rounded-xl p-5 md:p-6 border shadow-sm flex-1 min-h-[300px] md:min-h-125">
+                <div className="bg-white rounded-xl p-5 md:p-6 border shadow-sm flex-1 min-h-75 md:min-h-125">
 
                     {/* TRANSCRIPT HEADER */}
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 border-b pb-4 gap-4 sm:gap-0">
@@ -320,32 +326,38 @@ const TranscriptTab = () => {
 
 
             {/* SHARE MODAL */}
-            {showShareModal && (
+            {showShareModal && recording && (
                 <div
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+                    className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-50 p-4"
                     onClick={() => setShowShareModal(false)}
                 >
                     <div
-                        className="bg-white w-full max-w-md rounded-2xl p-8 relative shadow-2xl animate-in fade-in zoom-in duration-200"
+                        className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <button
-                            onClick={() => setShowShareModal(false)}
-                            className="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition"
-                        >
-                            ✕
-                        </button>
+                        <div className='flex justify-between items-center'>
+                            {/* HEADER */}
+                            <div>
+                                <h2 className="text-[22px] font-bold mb-1">Share & Export</h2>
+                                <p className="text-[14px] text-[#808080] mt-2">
+                                    {recording.title || "Untitled Recording"} • {formatTime(recording.duration || 0)}
+                                </p>
+                            </div>
 
-                        <h2 className="text-2xl font-bold mb-1 text-gray-900">
-                            Share & Export
-                        </h2>
+                            {/* CLOSE BUTTON */}
+                            <div>
+                                <button
+                                    onClick={() => setShowShareModal(false)}
+                                    className="px-3.5 py-2 bg-[#EBEBEB] text-[#374957] rounded-full flex items-center justify-center"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        </div>
 
-                        <p className="text-sm text-gray-500 mb-8">
-                            {recording.title} • {formatTime(recording.duration)}
-                        </p>
-
-                        <div className="space-y-3">
-
+                        {/* OPTIONS */}
+                        <div className="space-y-3 mt-3">
+                            {/* DOWNLOAD AUDIO */}
                             <div
                                 onClick={() => {
                                     const link = document.createElement('a');
@@ -353,129 +365,114 @@ const TranscriptTab = () => {
                                     link.download = recording.title || 'recording';
                                     link.click();
                                 }}
-                                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
+                                className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
                             >
-                                <div>
-                                    <p className="font-bold text-gray-800 group-hover:text-blue-700">
-                                        Download Audio
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Save recording file locally
-                                    </p>
+                                <div className='flex gap-4 items-center'>
+                                    <img src={audioi} alt="" className='p-4 rounded-2xl bg-[#D4D4FE]' />
+                                    <div>
+                                        <p className="text-[#2B2B2B] text-[18px] font-medium ">Download Audio</p>
+                                        <p className="text-[16px] font-medium text-[#AAAAAA]">Save recording file</p>
+                                    </div>
                                 </div>
-                                <span className="text-gray-400 group-hover:text-blue-500">
-                                    ›
-                                </span>
+                                <span className='text-[#374957] text-[25px] '> › </span>
                             </div>
 
+                            {/* COPY SUMMARY */}
                             <div
                                 onClick={() => {
-                                    navigator.clipboard.writeText(recording.summary);
-                                    alert("Summary copied to clipboard!");
+                                    navigator.clipboard.writeText(recording.summary || "No summary available");
+                                    alert("Summary copied!");
                                 }}
-                                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
+                                className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
                             >
-                                <div>
-                                    <p className="font-bold text-gray-800 group-hover:text-blue-700">
-                                        Copy Summary
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Copy AI-generated summary
-                                    </p>
+                                <div className='flex gap-4 items-center'>
+                                    <img src={summaryi} alt="" className='p-4 rounded-2xl bg-[#D4D4FE]' />
+                                    <div>
+                                        <p className="text-[#2B2B2B] text-[18px] font-medium ">Copy Summary</p>
+                                        <p className="text-[16px] font-medium text-[#AAAAAA]">Copy AI-generated summary</p>
+                                    </div>
                                 </div>
-                                <span className="text-gray-400 group-hover:text-blue-500">
-                                    ›
-                                </span>
+                                <span className='text-[#374957] text-[25px] '> › </span>
                             </div>
 
+                            {/* DOWNLOAD PDF (Simulated as TXT for now as per RecordHistory) */}
                             <div
                                 onClick={() => {
-                                    const content = `
-                                        Title: ${recording.title}
-
-                                        Summary:
-                                        ${recording.summary || "No summary"}
-
-                                        Transcript:
-                                        ${recording.transcript || "No transcript"}
-                                    `;
+                                    const content = `Title: ${recording.title || ""}\n\nSummary:\n${recording.summary || "No summary"}\n\nTranscript:\n${recording.transcript || "No transcript"}`;
                                     const blob = new Blob([content], { type: "text/plain" });
                                     const url = URL.createObjectURL(blob);
                                     const link = document.createElement("a");
                                     link.href = url;
-                                    link.download = `${recording.title}-notes.txt`;
+                                    link.download = `${recording.title || "recording"}.txt`;
                                     link.click();
                                 }}
-                                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
+                                className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
                             >
-                                <div>
-                                    <p className="font-bold text-gray-800 group-hover:text-blue-700">
-                                        Download Notes (TXT)
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Summary + transcript
-                                    </p>
+                                <div className='flex gap-4 items-center'>
+                                    <img src={pdf} alt="" className='p-4 rounded-2xl bg-[#D4D4FE]' />
+                                    <div>
+                                        <p className="text-[#2B2B2B] text-[18px] font-medium ">Download PDF</p>
+                                        <p className="text-[16px] font-medium text-[#AAAAAA]">Summary + full transcript as PDF</p>
+                                    </div>
                                 </div>
-                                <span className="text-gray-400 group-hover:text-blue-500">
-                                    ›
-                                </span>
+                                <span className='text-[#374957] text-[25px] '> › </span>
                             </div>
 
+                            {/* EXPORT TRANSCRIPT */}
                             <div
                                 onClick={() => {
-                                    navigator.clipboard.writeText(recording.transcript);
-                                    alert("Transcript copied to clipboard!");
+                                    const blob = new Blob([recording.transcript || "No transcript"], { type: "text/plain" });
+                                    const url = URL.createObjectURL(blob);
+                                    const link = document.createElement("a");
+                                    link.href = url;
+                                    link.download = `${recording.title || "recording"}-transcript.txt`;
+                                    link.click();
                                 }}
-                                className="flex items-center justify-between p-4 border rounded-xl hover:bg-blue-50 hover:border-blue-200 transition cursor-pointer group"
+                                className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
                             >
-                                <div>
-                                    <p className="font-bold text-gray-800 group-hover:text-blue-700">
-                                        Copy Transcript
-                                    </p>
-                                    <p className="text-sm text-gray-500">
-                                        Copy full transcript
-                                    </p>
+                                <div className='flex gap-4 items-center'>
+                                    <img src={transcripti} alt="" className='p-3 rounded-2xl bg-[#D4D4FE]' />
+                                    <div>
+                                        <p className="text-[#2B2B2B] text-[18px] font-medium ">Export Transcript</p>
+                                        <p className="text-[16px] font-medium text-[#AAAAAA]">Download as .txt, .md or .docx</p>
+                                    </div>
                                 </div>
-                                <span className="text-gray-400 group-hover:text-blue-500">
-                                    ›
-                                </span>
+                                <span className='text-[#374957] text-[25px] '> › </span>
                             </div>
 
-                        </div>
-
-
-                        {/* INTERNAL LINK */}
-                        <div className="mt-8">
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">
-                                Internal Blob URL
-                            </p>
-
-                            <div className="flex items-center gap-2">
-
-                                <input
-                                    type="text"
-                                    readOnly
-                                    value={recording.audioURL}
-                                    className="flex-1 px-3 py-2 bg-gray-50 border rounded-lg text-xs font-mono text-gray-500 outline-none"
-                                />
-
-                                <button
-                                    onClick={() => {
-                                        navigator.clipboard.writeText(recording.audioURL);
-                                        alert("Link copied!");
-                                    }}
-                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition shadow-md shadow-blue-200"
-                                >
-                                    Copy
-                                </button>
-
+                            {/* SHARE LINK */}
+                            <div
+                                onClick={() => window.open(recording.audioURL, "_blank")}
+                                className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+                            >
+                                <div className='flex gap-4 items-center'>
+                                    <img src={linkk} alt="" className='p-3 rounded-2xl bg-[#D4D4FE]' />
+                                    <div>
+                                        <p className="text-[#2B2B2B] text-[18px] font-medium ">Share Link</p>
+                                        <p className="text-[16px] font-medium text-[#AAAAAA]">Anyone with link can view (read only) </p>
+                                    </div>
+                                </div>
+                                <span className='text-[#374957] text-[25px] '> › </span>
                             </div>
-
-                            <p className="text-[10px] text-gray-400 mt-2 italic">
-                                * Note: Blob URLs are session-specific and will expire on refresh.
-                            </p>
                         </div>
 
+                        {/* AUDIO LINK */}
+                        <div className="flex gap-2 mt-6">
+                            <input
+                                readOnly
+                                value={recording.audioURL || ""}
+                                className="flex-1 px-3 py-2 border border-[#DDDDDD] text-[14px] text-[#808080] font-medium rounded-lg text-sm outline-none"
+                            />
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(recording.audioURL || "");
+                                    alert("Link copied!");
+                                }}
+                                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition"
+                            >
+                                Copy
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}

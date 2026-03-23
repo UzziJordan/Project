@@ -12,56 +12,56 @@ const TranscriptPage = () => {
         <div className='pt-18 md:pt-20 text-geist'>
             <Searchbar />
 
-{/* TAB NAVIGATION SECTION */}
-<div className="mx-4 md:mx-10 lg:mx-18 mt-6 md:mt-8 mb-4 md:mb-6">
-    
-    <div className="flex items-center bg-gray-100 p-1 rounded-xl w-fit">
-        
-        {/* Transcript */}
-        <NavLink
-            to="/dashboard/transcript"
-            end
-            className={({ isActive }) =>
-                `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
-                    isActive
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                }`
-            }
-        >
-            Transcript
-        </NavLink>
+            {/* TAB NAVIGATION SECTION */}
+            <div className="mx-4 md:mx-10 lg:mx-18 mt-6 md:mt-8 mb-4 md:mb-6">
+                
+                <div className="flex items-center bg-gray-100 p-1 rounded-xl w-fit">
+                    
+                    {/* Transcript */}
+                    <NavLink
+                        to="/dashboard/transcript"
+                        end
+                        className={({ isActive }) =>
+                            `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
+                                isActive
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-500 hover:text-gray-700"
+                            }`
+                        }
+                    >
+                        Transcript
+                    </NavLink>
 
-        {/* Summary */}
-        <NavLink
-            to="/dashboard/transcript/summary"
-            className={({ isActive }) =>
-                `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
-                    isActive
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                }`
-            }
-        >
-            Summary
-        </NavLink>
+                    {/* Summary */}
+                    <NavLink
+                        to="/dashboard/transcript/summary"
+                        className={({ isActive }) =>
+                            `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
+                                isActive
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-500 hover:text-gray-700"
+                            }`
+                        }
+                    >
+                        Summary
+                    </NavLink>
 
-        {/* To-Do */}
-        <NavLink
-            to="/dashboard/transcript/todo"
-            className={({ isActive }) =>
-                `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
-                    isActive
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-gray-500 hover:text-gray-700"
-                }`
-            }
-        >
-            To-Do
-        </NavLink>
+                    {/* To-Do */}
+                    <NavLink
+                        to="/dashboard/transcript/todo"
+                        className={({ isActive }) =>
+                            `px-4 py-2 text-sm md:text-base font-medium rounded-lg transition ${
+                                isActive
+                                    ? "bg-white text-gray-900 shadow-sm"
+                                    : "text-gray-500 hover:text-gray-700"
+                            }`
+                        }
+                    >
+                        To-Do
+                    </NavLink>
 
-    </div>
-</div>
+                </div>
+            </div>
 
             {/* NESTED CONTENT SECTION */}
             <div className="mx-4 md:mx-10 lg:mx-18">
