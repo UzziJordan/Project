@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import profileimg from '../../Images/profileimg.svg';
 import Searchbar from '../../Components/Dashboard/Searchbar';
-import { account } from "../../lib/appwrite";
+import { account, storage, ID } from "../../lib/appwrite";
+import { PROFILE_BUCKET_ID } from "../../lib/databaseConfig";
 
 /**
  * Settings Component
@@ -13,6 +14,10 @@ const Settings = () => {
     const [enabled, setEnabled] = useState(false);
     const [user, setUser] = useState(null);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [uploading, setUploading] = useState(false);
+    const [profileUrl, setProfileUrl] = useState(profileimg);
+
+    const fileInputRef = useRef(null);
 
 
     // --- SIDE EFFECTS ---
@@ -21,6 +26,12 @@ const Settings = () => {
             try {
                 const currentUser = await account.get();
                 setUser(currentUser);
+                
+                // Check if user has a profile image in preferences
+                if (currentUser.prefs?.profileId) {
+                    const url = storage.getFileView(PROFILE_BUCKET_ID, currentUser.prefs.profileId);
+                    setProfileUrl(url.toString());
+                }
             } catch (error) {
                 console.error("Failed to fetch user in Settings:", error);
                 setUser(null);
@@ -31,6 +42,41 @@ const Settings = () => {
 
         fetchUser();
     }, []);
+
+
+    // --- HANDLERS ---
+    const handleImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        try {
+            setUploading(true);
+            
+            // 1. Upload to Appwrite Storage
+            const response = await storage.createFile(
+                PROFILE_BUCKET_ID,
+                ID.unique(),
+                file
+            );
+
+            // 2. Update user preferences with new file ID
+            await account.updatePrefs({
+                ...user.prefs,
+                profileId: response.$id
+            });
+
+            // 3. Update local state
+            const url = storage.getFileView(PROFILE_BUCKET_ID, response.$id);
+            setProfileUrl(url.toString());
+            
+            alert("Profile picture updated successfully!");
+        } catch (error) {
+            console.error("Error uploading profile image:", error);
+            alert("Failed to upload image. Make sure the Profile Bucket ID is correct and permissions are set.");
+        } finally {
+            setUploading(false);
+        }
+    };
 
 
     // --- CONSTANTS ---
@@ -77,14 +123,26 @@ const Settings = () => {
                         </div>
 
                         <div className="flex items-center gap-5">
+                            <input 
+                                type="file" 
+                                ref={fileInputRef} 
+                                onChange={handleImageChange} 
+                                className="hidden" 
+                                accept="image/*"
+                            />
+                            
                             <img
-                                src={profileimg}
-                                className="h-12 w-12 rounded-full object-cover"
+                                src={profileUrl}
+                                className="h-12 w-12 rounded-full object-cover border"
                                 alt="Profile"
                             />
 
-                            <button className="bg-[#F3F4F6] p-2 rounded-lg text-sm hover:bg-gray-100 transition">
-                                Change
+                            <button 
+                                onClick={() => fileInputRef.current.click()}
+                                disabled={uploading}
+                                className="bg-[#F3F4F6] px-4 py-2 rounded-lg text-sm hover:bg-gray-100 transition disabled:opacity-50"
+                            >
+                                {uploading ? "Uploading..." : "Change"}
                             </button>
                         </div>
                     </div>

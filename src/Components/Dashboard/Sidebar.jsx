@@ -4,8 +4,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FaHome, FaBook, FaList, FaCog } from "react-icons/fa";
 import { HiOutlineClipboardList } from "react-icons/hi";
 
-import image from "../../Images/philip.svg";
-import { account } from "../../lib/appwrite";
+import defaultImage from "../../Images/philip.svg";
+import { account, storage } from "../../lib/appwrite";
+import { PROFILE_BUCKET_ID } from "../../lib/databaseConfig";
 
 
 // ================= CONFIG =================
@@ -22,6 +23,7 @@ const navItems = [
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const [user, setUser] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [profileUrl, setProfileUrl] = useState(defaultImage);
 
   const menuRef = useRef(null);
   const navigate = useNavigate();
@@ -31,7 +33,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        setUser(await account.get());
+        const currentUser = await account.get();
+        setUser(currentUser);
+
+        if (currentUser.prefs?.profileId) {
+          const url = storage.getFileView(PROFILE_BUCKET_ID, currentUser.prefs.profileId);
+          setProfileUrl(url.toString());
+        }
       } catch {
         setUser(null);
       }
@@ -139,9 +147,9 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           className="relative flex items-center gap-3 p-4 border-t border-[#CCCCCC] cursor-pointer"
         >
           <img
-            src={image}
+            src={profileUrl}
             alt="User avatar"
-            className="w-9 h-9 rounded-full object-cover"
+            className="w-9 h-9 rounded-full object-cover border"
           />
 
           <span className="text-[16px] font-semibold">
