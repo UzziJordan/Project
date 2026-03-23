@@ -130,9 +130,14 @@ const RecordHistory = ({ searchTerm = "" }) => {
         rec.$id
       );
 
-      // 2. Delete from Storage
+      // 2. Delete from Storage (optional/best effort)
       if (rec.audioFileId) {
-        await storage.deleteFile(BUCKET_ID, rec.audioFileId);
+        try {
+          await storage.deleteFile(BUCKET_ID, rec.audioFileId);
+        } catch (storageError) {
+          console.warn("Could not delete file from storage:", storageError);
+          // We don't throw here so the UI still updates if the document was deleted
+        }
       }
 
       const updated = recordings.filter((r) => r.$id !== rec.$id);
@@ -272,7 +277,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
                     </button>
                     
                     {openMenuId === rec.$id && (
-                      <div className="absolute right-0 top-10 w-36 bg-white border border-gray-200 rounded-lg shadow-xl z-20 py-1">
+                      <div className="absolute right-0 bottom-0 w-36 bg-white border border-gray-200 rounded-lg shadow-xl z-20 py-1">
 
                         <button
                           onClick={(e) => handleDelete(rec, e)}

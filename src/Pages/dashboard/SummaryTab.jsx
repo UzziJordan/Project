@@ -27,8 +27,8 @@ const Summary = () => {
 
     // Split summary text into individual points
     const summaryPoints = recording?.summary
-        ? recording.summary.split(/[.!?]/).filter(s => s.trim().length > 5)
-        : ["No summary available."];
+    ? recording.summary.split(/[.!?]/).filter(s => s.trim().length > 5)
+    : ["No summary available."];
 
     // --- RENDER HELPERS ---
     if (!recording) {
@@ -39,6 +39,7 @@ const Summary = () => {
             </div>
         );
     }
+
     const formatDuration = (seconds) => {
         if (!seconds) return "0 sec";
 
@@ -68,6 +69,7 @@ const Summary = () => {
             hour12: false,      // 19:26:54
         });
     };
+    
 
     // --- MAIN RENDER ---
     return (

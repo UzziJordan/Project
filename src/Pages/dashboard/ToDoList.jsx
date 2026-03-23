@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Searchbar from '../../Components/Dashboard/Searchbar';
-import { FiPlus } from 'react-icons/fi';
+import { FiPlus, FiTrash2 } from 'react-icons/fi';
 import { databases, account, ID } from '../../lib/appwrite';
 import { DATABASE_ID, TODOS_COLLECTION_ID } from '../../lib/databaseConfig';
 import { Query } from 'appwrite';
@@ -106,6 +106,23 @@ const ToDoList = () => {
             );
         } catch (error) {
             console.error("Error toggling task:", error);
+        }
+    };
+
+    const handleDeleteTask = async (id) => {
+        if (!window.confirm("Delete this task?")) return;
+
+        try {
+            await databases.deleteDocument(
+                DATABASE_ID,
+                TODOS_COLLECTION_ID,
+                id
+            );
+
+            setTasks(tasks.filter(t => t.$id !== id));
+        } catch (error) {
+            console.error("Error deleting task:", error);
+            alert("Failed to delete task from Appwrite.");
         }
     };
 
@@ -229,9 +246,18 @@ const ToDoList = () => {
 
                                 </div>
 
-                                <span className="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full font-bold">
-                                    Pending
-                                </span>
+                                <div className="flex items-center gap-3">
+                                    <span className="bg-orange-100 text-orange-600 text-xs px-3 py-1 rounded-full font-bold">
+                                        Pending
+                                    </span>
+                                    <button 
+                                        onClick={() => handleDeleteTask(task.$id)}
+                                        className="text-gray-400 hover:text-red-500 transition-colors"
+                                        title="Delete task"
+                                    >
+                                        <FiTrash2 size={18} />
+                                    </button>
+                                </div>
                             </div>
                         ))}
 
@@ -274,9 +300,18 @@ const ToDoList = () => {
 
                                 </div>
 
-                                <span className="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full font-bold">
-                                    Done
-                                </span>
+                                <div className="flex items-center gap-3">
+                                    <span className="bg-green-100 text-green-600 text-xs px-3 py-1 rounded-full font-bold">
+                                        Done
+                                    </span>
+                                    <button 
+                                        onClick={() => handleDeleteTask(task.$id)}
+                                        className="text-gray-400 hover:text-red-500 transition-colors"
+                                        title="Delete task"
+                                    >
+                                        <FiTrash2 size={18} />
+                                    </button>
+                                </div>
                             </div>
                         ))}
 
