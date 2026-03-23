@@ -11,7 +11,7 @@ import Searchbar from '../../Components/Dashboard/Searchbar';
 const Home = () => {
     // --- RENDER ---
     return (
-        <div className="flex pt-18 md:pt-20 flex-col ">
+        <div className="flex pt-18 md:pt-20 flex-col mb-18 ">
             {/* SEARCH COMPONENT */}
             <Searchbar />
 
@@ -27,9 +27,6 @@ const Home = () => {
                 <RecordList />
 
                 {/* EMPTY STATE FALLBACK */}
-                <p className='flex justify-center pt-10 md:pt-20 text-gray-400 items-center text-sm md:text-base'>
-                    No Recording History 
-                </p>
             </div>
         </div>
     );

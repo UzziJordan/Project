@@ -158,7 +158,7 @@ const Searchbar = () => {
 
                                                     {/* TEXT */}
                                                     <div className="min-w-0">
-                                                        <p className="text-sm font-semibold text-gray-800 truncate max-w-[150px] md:max-w-50">
+                                                        <p className="text-sm font-semibold text-gray-800 truncate max-w-37.5 md:max-w-50">
                                                             {rec.title}
                                                         </p>
 

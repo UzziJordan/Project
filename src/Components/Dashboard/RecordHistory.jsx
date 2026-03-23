@@ -4,6 +4,11 @@ import { FiUpload, FiMoreHorizontal } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
 
 import divrec from '../../Images/divrec.svg';
+import audioi from '../../Images/audio.svg';
+import linkk from '../../Images/linkk.svg'
+import pdf from '../../Images/pdf.svg'
+import summaryi from '../../Images/summary.svg'
+import transcripti from '../../Images/transcript.svg'
 
 
 // ================= COMPONENT =================
@@ -29,15 +34,19 @@ const RecordHistory = ({ searchTerm = "" }) => {
   const filteredRecordings = recordings.filter((rec) => {
     const searchLower = searchTerm.toLowerCase();
 
+    const title = rec?.title || "";
+    const transcript = rec?.transcript || "";
+    const summary = rec?.summary || "";
+
     return (
-      rec.title.toLowerCase().includes(searchLower) ||
-      (rec.transcript && rec.transcript.toLowerCase().includes(searchLower)) ||
-      (rec.summary && rec.summary.toLowerCase().includes(searchLower))
+      title.toLowerCase().includes(searchLower) ||
+      transcript.toLowerCase().includes(searchLower) ||
+      summary.toLowerCase().includes(searchLower)
     );
   });
 
 
-  // ================= CLOSE DROPDOWN ON OUTSIDE CLICK =================
+  // ================= CLOSE DROPDOWN =================
   useEffect(() => {
     const handleClickOutside = () => setOpenMenuId(null);
 
@@ -51,7 +60,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
   }, [openMenuId]);
 
 
-  // ================= HELPER FUNCTIONS =================
+  // ================= HELPERS =================
   const formatTime = (seconds) => {
     if (!seconds) return "00:00";
 
@@ -63,10 +72,29 @@ const RecordHistory = ({ searchTerm = "" }) => {
       .padStart(2, '0')}`;
   };
 
+  const formatDate = (date) => {
+    if (!date) return "";
 
-  // ================= ACTION HANDLERS =================
+    return new Date(date).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
 
-  // Delete recording
+  const getTagStyles = (tag) => {
+    const t = (tag || "").toLowerCase();
+
+    if (t === "product") return "bg-[#EFF6FF] text-[#2563EB]";
+    if (t === "interview") return "bg-[#F5F3FF] text-[#7C3AED]";
+    if (t === "lecture") return "bg-[#F0FDF4] text-[#16A34A]";
+    if (t === "client") return "bg-[#FFFBEB] text-[#D97706]";
+
+    return "bg-blue-50 text-blue-600";
+  };
+
+
+  // ================= ACTIONS =================
   const handleDelete = (id, e) => {
     e.stopPropagation();
 
@@ -79,7 +107,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
     setOpenMenuId(null);
   };
 
-  // Download audio file
+
   const handleDownloadAudio = (rec) => {
     const link = document.createElement('a');
     link.href = rec.audioURL;
@@ -87,20 +115,20 @@ const RecordHistory = ({ searchTerm = "" }) => {
     link.click();
   };
 
-  // Navigate to transcript page
+  
   const handleRowClick = (rec) => {
     localStorage.setItem('latestRecording', JSON.stringify(rec));
     navigate('/dashboard/transcript');
   };
 
-  // Open share modal
+  
   const handleShareClick = (e, rec) => {
     e.stopPropagation();
     setSelectedRecording(rec);
     setShowModal(true);
   };
 
-  // Toggle dropdown menu
+  
   const handleMenuClick = (e, rec) => {
     e.stopPropagation();
     setOpenMenuId(openMenuId === rec.id ? null : rec.id);
@@ -109,24 +137,22 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= UI =================
   return (
-    <div className='px-6 mt-8 pb-10'>
+    <div className='px-6 mt-2 pb-10'>
 
-      {/* ================= TABLE ================= */}
-      <div className="bg-white border-2 border-[#EBEBEB] rounded-xl overflow-hidden shadow-sm">
+      
+      <div className="bg-white border border-[#E5E7EB] rounded-xl overflow-hidden">
 
-        {/* ================= HEADER ================= */}
-        <div className="grid grid-cols-5 px-6 py-3 bg-[#EFF2F9] text-[14px] font-semibold text-[#808080]">
+        {/* HEADER */}
+        <div className="grid grid-cols-5 px-6 py-3 bg-[#EFF2F9] border border-[#EBEBEB] text-[14px] font-semibold text-[#808080]">
           <div className="col-span-2">TITLE</div>
           <div>DATE</div>
           <div>DURATION</div>
           <div>TAGS</div>
         </div>
 
-
-        {/* ================= CONTENT ================= */}
+        {/* CONTENT */}
         {filteredRecordings.length === 0 ? (
-
-          // ===== EMPTY STATE =====
+          
           <div className="p-10 text-center text-gray-400 text-sm">
             <p className="mb-2">
               {searchTerm
@@ -145,64 +171,58 @@ const RecordHistory = ({ searchTerm = "" }) => {
           </div>
 
         ) : (
-
-          // ===== RECORD LIST =====
+          
           filteredRecordings.map((rec) => (
             <div
               key={rec.id}
               onClick={() => handleRowClick(rec)}
-              className="grid grid-cols-5 items-center px-6 py-4 border-t hover:bg-gray-50 cursor-pointer transition"
+              className="grid grid-cols-5 items-center px-6 py-4 hover: cursor-pointer transition"
             >
 
-              {/* ===== TITLE ===== */}
+              {/* TITLE */}
               <div className="col-span-2 flex items-center gap-3 font-semibold">
                 <img src={divrec} alt="record icon" className="w-8 h-8 opacity-80" />
-                <p className="truncate pr-4">{rec.title}</p>
+                <p className="truncate text-[#1F2937] text-[16px] font-medium pr-4">{rec.title || "Untitled Recording"}</p>
               </div>
 
-
-              {/* ===== DATE ===== */}
-              <div className='text-sm text-gray-500'>
-                {rec.date}
+              {/* DATE */}
+              <div className='text-[14px] text-[#1F2937]'>
+                {formatDate(rec.date)}
               </div>
 
-
-              {/* ===== DURATION ===== */}
-              <div className='text-sm font-medium tabular-nums text-gray-600'>
-                {formatTime(rec.duration)}
+              {/* DURATION */}
+              <div className='text-[14px] text-[#1F2937]'>
+                {formatTime(rec.duration || 0)}
               </div>
 
-
-              {/* ===== TAG + ACTIONS ===== */}
+              {/* TAG + ACTIONS */}
               <div className="flex items-center justify-between">
 
-                {/* TAG */}
-                <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold uppercase tracking-wider">
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${getTagStyles(
+                    rec.tag
+                  )}`}
+                >
                   {rec.tag || "Meeting"}
                 </span>
-
-                {/* ACTION BUTTONS */}
+                
                 <div className="flex gap-2">
-
-                  {/* SHARE BUTTON */}
+                  
                   <button
                     onClick={(e) => handleShareClick(e, rec)}
-                    className="p-2 border rounded-lg hover:bg-white hover:shadow-sm"
+                    className="p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
                   >
                     <FiUpload />
                   </button>
-
-
-                  {/* MENU BUTTON */}
+                  
                   <div className="relative">
                     <button
                       onClick={(e) => handleMenuClick(e, rec)}
-                      className="p-2 border rounded-lg hover:bg-white hover:shadow-sm"
+                      className="p-2 border text-[#6B7280] border-[#E5E7EB] rounded-lg hover:bg-white hover:shadow-sm"
                     >
                       <FiMoreHorizontal />
                     </button>
-
-                    {/* DROPDOWN MENU */}
+                    
                     {openMenuId === rec.id && (
                       <div className="absolute right-0 top-10 w-36 bg-white border rounded-lg shadow-xl z-20 py-1">
 
@@ -236,165 +256,196 @@ const RecordHistory = ({ searchTerm = "" }) => {
       </div>
 
 
-      {/* ================= MODAL ================= */}
-      {showModal && selectedRecording && (
-        <div
-          className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-50"
-          onClick={() => setShowModal(false)}
-        >
+{/* ================= MODAL ================= */}
+{showModal && selectedRecording && (
+  <div
+    className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-50"
+    onClick={() => setShowModal(false)}
+  >
 
-          {/* MODAL CONTENT */}
-          <div
-            className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
+    <div
+      className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl"
+      onClick={(e) => e.stopPropagation()}
+    >
 
-            {/* CLOSE BUTTON */}
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"
-            >
-              ✕
-            </button>
-
-
-            {/* HEADER */}
-            <h2 className="text-lg font-semibold mb-1">Share & Export</h2>
-            <p className="text-sm text-gray-500 mb-6">
-              {selectedRecording.title} • {formatTime(selectedRecording.duration)}
-            </p>
-
-
-            {/* ================= OPTIONS ================= */}
-            <div className="space-y-3">
-
-              {/* DOWNLOAD AUDIO */}
-              <div
-                onClick={() => handleDownloadAudio(selectedRecording)}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
-              >
-                <div>
-                  <p className="font-medium">Download Audio</p>
-                  <p className="text-sm text-gray-500">Save recording file</p>
-                </div>
-                <span>›</span>
-              </div>
-
-
-              {/* COPY SUMMARY */}
-              <div
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    selectedRecording.summary || "No summary available"
-                  );
-                }}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
-              >
-                <div>
-                  <p className="font-medium">Copy Summary</p>
-                  <p className="text-sm text-gray-500">Copy AI-generated summary</p>
-                </div>
-                <span>›</span>
-              </div>
-
-
-              {/* DOWNLOAD TRANSCRIPT (TEXT FILE) */}
-              <div
-                onClick={() => {
-                  const content = `
-                  Title: ${selectedRecording.title}
-
-                  Summary:
-                  ${selectedRecording.summary || "No summary"}
-
-                  Transcript:
-                  ${selectedRecording.transcript || "No transcript"}
-                  `;
-
-                  const blob = new Blob([content], { type: "text/plain" });
-                  const url = URL.createObjectURL(blob);
-
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = `${selectedRecording.title}.txt`;
-                  link.click();
-                }}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
-              >
-                <div>
-                  <p className="font-medium">Download Transcript</p>
-                  <p className="text-sm text-gray-500">Summary + transcript</p>
-                </div>
-                <span>›</span>
-              </div>
-
-
-              {/* EXPORT TRANSCRIPT ONLY */}
-              <div
-                onClick={() => {
-                  const blob = new Blob(
-                    [selectedRecording.transcript || "No transcript"],
-                    { type: "text/plain" }
-                  );
-
-                  const url = URL.createObjectURL(blob);
-
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = `${selectedRecording.title}-transcript.txt`;
-                  link.click();
-                }}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
-              >
-                <div>
-                  <p className="font-medium">Export Transcript</p>
-                  <p className="text-sm text-gray-500">TXT format</p>
-                </div>
-                <span>›</span>
-              </div>
-
-
-              {/* OPEN AUDIO */}
-              <div
-                onClick={() => window.open(selectedRecording.audioURL, "_blank")}
-                className="flex items-center justify-between p-4 border rounded-xl hover:bg-gray-50 cursor-pointer"
-              >
-                <div>
-                  <p className="font-medium">Open Audio</p>
-                  <p className="text-sm text-gray-500">Play in new tab</p>
-                </div>
-                <span>›</span>
-              </div>
-
-            </div>
-
-
-            {/* ================= AUDIO LINK ================= */}
-            <div className="flex gap-2 mt-6">
-              <input
-                readOnly
-                value={selectedRecording.audioURL}
-                className="flex-1 px-3 py-2 border rounded-lg text-sm"
-              />
-
-              <button
-                onClick={() =>
-                  navigator.clipboard.writeText(selectedRecording.audioURL)
-                }
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
-              >
-                Copy
-              </button>
-            </div>
-
-          </div>
+      
+      <div className='flex justify-between items-center'>
+        {/* HEADER */}
+        <div>
+          <h2 className="text-[22px] font-bold mb-1">Share & Export</h2>
+          <p className="text-[14px] text-[#808080] mt-2">
+            {selectedRecording.title || "Untitled Recording"} • {formatTime(selectedRecording.duration || 0)}
+          </p>
         </div>
-      )}
 
+        {/* CLOSE BUTTON */}
+        <div>
+          <button
+            onClick={() => setShowModal(false)}
+            className="px-3.5 py-2 bg-[#EBEBEB] text-[#374957] rounded-full flex items-center justify-center"
+          >
+            ✕
+          </button>
+        </div>
+
+
+      </div>
+
+      {/* OPTIONS */}
+      <div className="space-y-3 mt-3">
+
+        {/* DOWNLOAD AUDIO */}
+        <div
+          onClick={() => handleDownloadAudio(selectedRecording)}
+          className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+        >
+          <div className='flex gap-4 items-center'>
+            <img src={audioi} alt="" 
+            className='p-4 rounded-2xl bg-[#D4D4FE]'/>
+
+            <div>
+              <p className="text-[#2B2B2B] text-[18px] font-medium ">Download Audio</p>
+              <p className="text-[16px] font-medium text-[#AAAAAA]">Save recording file</p>
+            </div>
+          </div>
+
+          <span className='text-[#374957] text-[25px] '> › </span>
+        </div>
+
+        {/* COPY SUMMARY */}
+        <div
+          onClick={() => {
+            navigator.clipboard.writeText(
+              selectedRecording.summary || "No summary available"
+            );
+          }}
+          className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+        >
+          <div className='flex gap-4 items-center'>
+            <img src={summaryi} alt="" 
+            className='p-4 rounded-2xl bg-[#D4D4FE]'/>
+
+            <div>
+              <p className="text-[#2B2B2B] text-[18px] font-medium ">Copy Summary</p>
+              <p className="text-[16px] font-medium text-[#AAAAAA]">Copy AI-generated summary</p>
+            </div>
+          </div>
+
+          <span className='text-[#374957] text-[25px] '> › </span>
+        </div>
+
+        {/* DOWNLOAD TRANSCRIPT */}
+        <div
+          onClick={() => {
+            const content = `
+            Title: ${selectedRecording.title || ""}
+
+            Summary:
+            ${selectedRecording.summary || "No summary"}
+
+            Transcript:
+            ${selectedRecording.transcript || "No transcript"}
+            `;
+
+            const blob = new Blob([content], { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${selectedRecording.title || "recording"}.txt`;
+            link.click();
+          }}
+          className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+        >
+          <div className='flex gap-4 items-center'>
+            <img src={pdf} alt="" 
+            className='p-4 rounded-2xl bg-[#D4D4FE]'/>
+
+            <div>
+              <p className="text-[#2B2B2B] text-[18px] font-medium ">Download PDF</p>
+              <p className="text-[16px] font-medium text-[#AAAAAA]">Summary + full transcript as PDF</p>
+            </div>
+          </div>
+
+          <span className='text-[#374957] text-[25px] '> › </span>
+        </div>
+
+
+        {/* EXPORT TRANSCRIPT */}
+        <div
+          onClick={() => {
+            const blob = new Blob(
+              [selectedRecording.transcript || "No transcript"],
+              { type: "text/plain" }
+            );
+
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `${selectedRecording.title || "recording"}-transcript.txt`;
+            link.click();
+          }}
+          className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+        >
+          <div className='flex gap-4 items-center'>
+            <img src={transcripti} alt="" 
+            className='p-3 rounded-2xl bg-[#D4D4FE]'/>
+
+            <div>
+              <p className="text-[#2B2B2B] text-[18px] font-medium ">Export Transcript</p>
+              <p className="text-[16px] font-medium text-[#AAAAAA]">Download as .txt, .md or .docx</p>
+            </div>
+          </div>
+
+          <span className='text-[#374957] text-[25px] '> › </span>
+        </div>
+
+        {/* OPEN AUDIO */}
+        <div
+          onClick={() => window.open(selectedRecording.audioURL, "_blank")}
+          className="flex items-center justify-between px-4 py-2 border border-[#DDDDDD] rounded-xl hover:bg-gray-50 cursor-pointer"
+        >
+          <div className='flex gap-4 items-center'>
+            <img src={linkk} alt="" 
+            className='p-3 rounded-2xl bg-[#D4D4FE]'/>
+
+            <div>
+              <p className="text-[#2B2B2B] text-[18px] font-medium ">Share Link</p>
+              <p className="text-[16px] font-medium text-[#AAAAAA]">Anyone with link can view (read only) </p>
+            </div>
+          </div>
+
+          <span className='text-[#374957] text-[25px] '> › </span>
+        </div>
+
+      </div>
+
+      {/* AUDIO LINK */}
+      <div className="flex gap-2 mt-6">
+        <input
+          readOnly
+          value={selectedRecording.audioURL || ""}
+          className="flex-1 px-3 py-2 border border-[#DDDDDD] text-[14px] text-[#808080] font-medium rounded-lg text-sm"
+        />
+
+        <button
+          onClick={() =>
+            navigator.clipboard.writeText(selectedRecording.audioURL || "")
+          }
+          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+        >
+          Copy
+        </button>
+      </div>
+
+    </div>
+  </div>
+)}
     </div>
   );
 };
 
 
-// ================= EXPORT =================
+
 export default RecordHistory;

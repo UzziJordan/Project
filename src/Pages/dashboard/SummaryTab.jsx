@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { FiCalendar, FiClock } from "react-icons/fi";
+
 /**
  * Summary Component
  * Purpose: Displays an AI-generated summary and key takeaways from the latest recording.
@@ -31,35 +33,86 @@ const Summary = () => {
     // --- RENDER HELPERS ---
     if (!recording) {
         return (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+            <div className="flex flex-col text-geist items-center justify-center h-64 text-gray-500">
                 <p>No summary available.</p>
                 <p className="text-sm">Go to the recording page to start a new session.</p>
             </div>
         );
     }
+    const formatDuration = (seconds) => {
+        if (!seconds) return "0 sec";
+
+        const sec = Math.floor(seconds);
+        const mins = Math.floor(sec / 60);
+        const hrs = Math.floor(mins / 60);
+
+        if (sec < 60) return `${sec} sec`;
+        if (mins < 60) return `${mins} min`;
+
+        const remainingMins = mins % 60;
+        return `${hrs}h ${remainingMins}min`;
+    };
+
+    const formatFullDate = (date) => {
+        if (!date) return "Unknown date";
+
+        const d = new Date(date);
+
+        return d.toLocaleString("en-GB", {
+            weekday: "short",   // Tue
+            day: "2-digit",     // 23
+            month: "short",     // Aug
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false,      // 19:26:54
+        });
+    };
 
     // --- MAIN RENDER ---
     return (
-        <div className="p-6 space-y-6 max-w-4xl mx-auto">
+        <div className="space-y-6 text-geist">
             {/* HEADER SECTION */}
-            <div className="bg-blue-50 p-6 rounded-2xl flex justify-between items-center border border-blue-100 shadow-sm">
+            <div className="bg-[#EAEAFC] p-6 rounded-2xl flex justify-between items-center">
                 <div>
-                    <h2 className="font-bold text-2xl text-blue-900">
+                    <h2 className="font-extrabold text-[22px] text-[#000000]">
                         {recording.title}
                     </h2>
-                    <p className="text-sm text-blue-600 font-medium mt-1">
-                        {recording.date} · {formatTime(recording.duration)} · 1 Speaker
-                    </p>
+                    
+                    <p className="text-[16px] text-[#555555] mt-1 flex items-center gap-2 flex-wrap">
+                    
+                        {/* DATE */}
+                        <span className="flex items-center gap-1">
+                            <FiCalendar className="text-[#555555]" />
+                            {formatFullDate(recording.date)}
+                        </span>
+
+                        <span>·</span>
+
+                        {/* DURATION */}
+                        <span className="flex items-center gap-1">
+                            <FiClock className="text-[#555555]" />
+                            {formatDuration(recording.duration)}
+                        </span>
+
+                        <span>·</span>
+
+                        {/* SPEAKER */}
+                        <span>1 Speaker</span>
+                    </p>                
                 </div>
 
-                <span className="text-xs bg-blue-600 text-white px-4 py-1.5 rounded-full font-bold shadow-sm flex items-center gap-1">
+                <span className="text-[16px] bg-white text-[#2828FA] px-4 py-1.5 rounded-full font-bold flex items-center gap-1">
                     <span className="animate-pulse">✦</span> AI Generated
                 </span>
             </div>
 
             {/* KEY TAKEAWAYS SECTION */}
-            <div className="bg-white rounded-2xl border shadow-sm p-8">
-                <p className="font-bold text-xl mb-6 text-gray-800 border-b pb-4">Key Takeaways</p>
+            <div className="bg-white rounded-2xl border border-[#EBEBEB] p-8">
+                <p className="font-semibold text-[#111827] mb-6 text-[18px] border-b pb-4">
+                    <span className="text-[16px] text-[#2828FA] bg-[#F4F4FE] rounded-xl px-2.5 py-1.5">✦</span> Meeting Summary
+
+                </p>
 
                 <ul className="space-y-4">
                     {summaryPoints.map((point, index) => (
@@ -84,9 +137,10 @@ const Summary = () => {
                 {/* Highlights Card */}
                 <div className="bg-white rounded-2xl border shadow-sm p-6">
                     <p className="font-bold text-lg mb-4 text-gray-800">Highlights</p>
+                    
                     <div className="space-y-3">
                         <div className="bg-green-50 text-green-700 p-3 rounded-xl text-sm font-medium border border-green-100">
-                            ✓ Successfully captured {recording.duration} seconds of audio.
+                            ✓ Successfully captured {formatDuration(recording.duration)} of audio.
                         </div>
                         <div className="bg-purple-50 text-purple-700 p-3 rounded-xl text-sm font-medium border border-purple-100">
                             💡 Processed locally in-browser.

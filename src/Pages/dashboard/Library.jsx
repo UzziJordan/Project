@@ -17,16 +17,17 @@ const Library = () => {
 
     // --- RENDER ---
     return (
-        <div className='text-geist pt-20'>
+        <div className='text-geist pt-20  bg-[#FFFFFF] h-full'>
+
             {/* GLOBAL SEARCH */}
             <Searchbar />
 
             {/* HEADER SECTION */}
-            <div className='text-black flex justify-between font-bold text-[20px] px-6 py-5'>
+            <div className='text-black flex justify-between font-bold text-[20px] px-12 py-5'>
                 <p>Recordings Library</p>
 
                 <Link to="/dashboard/recording">
-                    <div className='bg-[#2828FA] text-white text-[14px] font-semibold gap-2 flex py-3 px-5 rounded-full'>
+                    <div className='bg-[#2828FA] text-white items-center text-[14px] font-semibold gap-2 flex py-3 px-5 rounded-full'>
                         <span className='h-3 w-3 rounded-full bg-white'></span>
                         <p>New Recording</p>
                     </div>
@@ -34,7 +35,7 @@ const Library = () => {
             </div>
 
             {/* LOCAL SEARCH AND FILTER BAR */}
-            <div className="w-full px-6">
+            <div className="w-full px-12">
                 <div className="flex items-center justify-between bg-gray-100 border border-indigo-300 rounded-full px-4 py-3">
                     <div className="flex items-center gap-3 w-full">
                         <FiSearch className="text-gray-500 text-lg" />
@@ -55,22 +56,25 @@ const Library = () => {
             </div>
 
             {/* VIEW OPTIONS */}
-            <div className='flex text-[#4B5563] mt-2 justify-end px-6'>
+            <div className='flex text-[#4B5563] mt-2 justify-end px-15 py-4'>
                 View All →
             </div>
 
             {/* RECORDINGS HISTORY LIST */}
-            <RecordHistory
-                searchTerm={localSearch}
-                filters={filters}
-            />
+            <div className='px-6'>
+                <RecordHistory
+                    searchTerm={localSearch}
+                    filters={filters}
+                
+                />
 
-            {/* FILTER MODAL */}
-            <FilterModal
-                isOpen={showFilter}
-                onClose={() => setShowFilter(false)}
-                onApply={(data) => setFilters(data)}
-            />
+                {/* FILTER MODAL */}
+                <FilterModal
+                    isOpen={showFilter}
+                    onClose={() => setShowFilter(false)}
+                    onApply={(data) => setFilters(data)}
+                />
+            </div>
         </div>
     );
 };

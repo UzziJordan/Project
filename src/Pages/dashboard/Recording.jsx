@@ -178,7 +178,7 @@ const VoiceMemoRecorder = () => {
       const newRecording = {
         id: Date.now(),
         title: `Recording ${new Date().toLocaleTimeString()}`,
-        date: new Date().toLocaleDateString(),
+        date: new Date().toISOString(),
         duration: finalDuration,
         audioURL: url,
         tag: "Meeting",
