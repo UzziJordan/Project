@@ -1,11 +1,26 @@
 import React from 'react';
 import { FaCheck } from "react-icons/fa";
 import { FiUser, FiRadio } from "react-icons/fi";
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { account } from '../lib/appwrite';
 
 import arrow from '../Images/arrrow.svg'
 
 const Onboarding = () => {
+  const navigate = useNavigate();
+  const lastUserName = localStorage.getItem('lastUserName');
+
+  const handleSignIn = async () => {
+    try {
+      await account.get();
+      // If successful, user has a session
+      navigate('/dashboard');
+    } catch (error) {
+      // No session, go to login
+      navigate('/Login');
+    }
+  };
+
   return (
     <div className="max-h-screen lg:h-256 flex flex-col lg:flex-row text-geist">
       {/* Left Section */}
@@ -22,19 +37,26 @@ const Onboarding = () => {
           Your AI-powered meeting companion. Record any conversation and Memo automatically transcribes it, extract key insights, and creates action items - so you never miss a thing.
         </div>
 
-        <div className='flex mt-5 p-6 border rounded-2xl w-65 border-[#EBEBEB] gap-4'>
+        {/* CLICKABLE SIGNED IN SECTION */}
+        <button 
+          onClick={handleSignIn}
+          className='flex mt-5 p-6 border rounded-2xl w-65 border-[#EBEBEB] gap-4 hover:bg-gray-50 transition text-left cursor-pointer'
+        >
           <span className='flex text-[#2B2B2B] text-[14px]'>
             <p className='flex items-center gap-2'>
               <FiUser className="text-gray-500 text-lg" />
-              Signed in as <span className='font-semibold'> Philip Joy</span>
+              Signed in as <span className='font-semibold text-[12px] '> {lastUserName}</span>
             </p>
           </span>
-        </div>
-        <Link to="/Login">
-          <div className='mt-5 bg-[#2828FA] flex gap-6 w-65 rounded-2xl items-center text-white text-[14px] font-semibold py-3 px-10'>
-            Get Started <span className='text-[30px] items-center'> › </span> 
-          </div>
-        </Link>
+        </button>
+
+        {/* GET STARTED BUTTON */}
+        <button 
+          onClick={handleSignIn}
+          className='mt-5 bg-[#2828FA] flex gap-6 w-65 rounded-2xl items-center text-white text-[14px] font-semibold py-3 px-10 hover:opacity-90 transition cursor-pointer'
+        >
+          Get Started <span className='text-[30px] items-center'> › </span> 
+        </button>
       </div>
 
       {/* Right Section */}

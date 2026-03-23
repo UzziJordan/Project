@@ -1,7 +1,9 @@
-// ================= IMPORTS =================
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import { FiSearch, FiUpload, FiBell, FiMic, FiClock, FiMenu } from "react-icons/fi";
+import { databases, account } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID } from '../../lib/databaseConfig';
+import { Query } from 'appwrite';
 
 
 // ================= COMPONENT =================
@@ -40,19 +42,39 @@ const Searchbar = () => {
 
     // Filter recordings based on search term
     useEffect(() => {
-        if (searchTerm.trim() === '') {
-            setResults([]);
-            return;
-        }
+        const fetchResults = async () => {
+            if (searchTerm.trim() === '') {
+                setResults([]);
+                return;
+            }
 
-        const recordings = JSON.parse(localStorage.getItem('recordings')) || [];
+            try {
+                const user = await account.get();
+                // Query by title (Appwrite allows searching with partial matches if index is set up correctly)
+                // For now, we'll fetch a list and filter, or use Query.contains if available
+                const response = await databases.listDocuments(
+                    DATABASE_ID,
+                    RECORDINGS_COLLECTION_ID,
+                    [
+                        Query.equal('userId', [user.$id]),
+                        Query.limit(10),
+                        Query.orderDesc('$createdAt')
+                    ]
+                );
 
-        const filtered = recordings.filter((rec) =>
-            rec.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (rec.transcript && rec.transcript.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+                const filtered = response.documents.filter((rec) =>
+                    rec.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    (rec.transcript && rec.transcript.toLowerCase().includes(searchTerm.toLowerCase()))
+                );
 
-        setResults(filtered.slice(0, 5)); // Limit results to 5
+                setResults(filtered.slice(0, 5)); // Limit results to 5
+            } catch (error) {
+                console.error("Error searching recordings:", error);
+            }
+        };
+
+        const timeoutId = setTimeout(fetchResults, 300); // Small debounce
+        return () => clearTimeout(timeoutId);
     }, [searchTerm]);
 
 

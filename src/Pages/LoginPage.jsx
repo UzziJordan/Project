@@ -1,12 +1,39 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from "../Components/LoginPage/Hero/HeroSection";
 import LoginForm from "../Components/LoginPage/LoginForm";
+import { account } from '../lib/appwrite';
 
 /**
  * LoginPage Page Component
  * Purpose: Main authentication page for logging into the application.
  */
 const LoginPage = () => {
+    const navigate = useNavigate();
+    const [checkingSession, setCheckingSession] = useState(true);
+
+    useEffect(() => {
+        const checkSession = async () => {
+            try {
+                await account.get();
+                // If successful, user is already logged in
+                navigate('/dashboard');
+            } catch (error) {
+                // Not logged in, stay on login page
+                setCheckingSession(false);
+            }
+        };
+        checkSession();
+    }, [navigate]);
+
+    if (checkingSession) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
     // --- RENDER ---
     return (
         <div className="min-h-screen lg:h-256 flex flex-col lg:flex-row">

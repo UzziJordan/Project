@@ -33,18 +33,16 @@ const LoginForm = () => {
             // Authentication logic
             console.log("Login Data:", { email, password });
 
-            const result = await account.createEmailPasswordSession({
+            await account.createEmailPasswordSession({
                 email: email,
                 password: password
             });
 
-            console.log(result);
-            navigate("/dashboard");
+            // Get user details to store the name
+            const user = await account.get();
+            localStorage.setItem('lastUserName', user.name);
 
-            // Example redirect
-            setTimeout(() => {
-                window.location.href = "/dashboard";
-            }, 1000);
+            navigate("/dashboard");
 
         } catch (error) {
             console.error(error);

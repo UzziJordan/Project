@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Searchbar from '../../Components/Dashboard/Searchbar';
 import { FiPlus } from 'react-icons/fi';
+import { databases, account, ID } from '../../lib/appwrite';
+import { DATABASE_ID, TODOS_COLLECTION_ID } from '../../lib/databaseConfig';
+import { Query } from 'appwrite';
 
 /**
  * ToDoList Component
@@ -9,21 +12,34 @@ import { FiPlus } from 'react-icons/fi';
 const ToDoList = () => {
 
     // --- STATE AND HOOKS ---
-    const [tasks, setTasks] = useState(() => {
-        const savedTasks = localStorage.getItem('generalTodos');
-        return savedTasks ? JSON.parse(savedTasks) : [];
-    });
-
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [showInput, setShowInput] = useState(false);
     const [newTask, setNewTask] = useState("");
 
 
     // --- SIDE EFFECTS ---
 
-    // Persist tasks to localStorage whenever they change
+    // Fetch tasks from Appwrite
     useEffect(() => {
-        localStorage.setItem('generalTodos', JSON.stringify(tasks));
-    }, [tasks]);
+        const fetchTasks = async () => {
+            try {
+                const user = await account.get();
+                const response = await databases.listDocuments(
+                    DATABASE_ID,
+                    TODOS_COLLECTION_ID,
+                    [Query.equal('userId', [user.$id])]
+                );
+                setTasks(response.documents);
+            } catch (error) {
+                console.error("Error fetching tasks:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchTasks();
+    }, []);
 
 
     // --- LOGIC AND FILTERING ---
@@ -44,30 +60,53 @@ const ToDoList = () => {
 
 
     // --- HANDLERS ---
-    const handleAddTask = () => {
+    const handleAddTask = async () => {
         if (!newTask.trim()) return;
 
-        const task = {
-            id: Date.now(),
-            text: newTask,
-            completed: false,
-            createdAt: new Date().toISOString()
-        };
+        try {
+            const user = await account.get();
+            const taskData = {
+                userId: user.$id,
+                text: newTask,
+                completed: false,
+                createdAt: new Date().toISOString()
+            };
 
-        setTasks([task, ...tasks]);
-        setNewTask("");
-        setShowInput(false);
+            const response = await databases.createDocument(
+                DATABASE_ID,
+                TODOS_COLLECTION_ID,
+                ID.unique(),
+                taskData
+            );
+
+            setTasks([response, ...tasks]);
+            setNewTask("");
+            setShowInput(false);
+        } catch (error) {
+            console.error("Error adding task:", error);
+            alert("Failed to add task. Make sure Database and Collection IDs are set correctly.");
+        }
     };
 
 
-    const toggleTask = (id) => {
-        setTasks(
-            tasks.map(task =>
-                task.id === id
-                    ? { ...task, completed: !task.completed }
-                    : task
-            )
-        );
+    const toggleTask = async (id) => {
+        try {
+            const taskToToggle = tasks.find(t => t.$id === id);
+            const response = await databases.updateDocument(
+                DATABASE_ID,
+                TODOS_COLLECTION_ID,
+                id,
+                { completed: !taskToToggle.completed }
+            );
+
+            setTasks(
+                tasks.map(task =>
+                    task.$id === id ? response : task
+                )
+            );
+        } catch (error) {
+            console.error("Error toggling task:", error);
+        }
     };
 
 
@@ -87,11 +126,15 @@ const ToDoList = () => {
                             To-Do List
                         </h1>
 
-                        <div className="flex gap-3 mt-2 text-gray-500 text-sm">
-                            <p>{pendingTasks.length} pending</p>
-                            <p>{completedTasks.length} completed</p>
-                            <p>Total {tasks.length} tasks</p>
-                        </div>
+                        {loading ? (
+                            <p className="text-gray-500 text-sm mt-2">Loading tasks...</p>
+                        ) : (
+                            <div className="flex gap-3 mt-2 text-gray-500 text-sm">
+                                <p>{pendingTasks.length} pending</p>
+                                <p>{completedTasks.length} completed</p>
+                                <p>Total {tasks.length} tasks</p>
+                            </div>
+                        )}
                     </div>
 
                     <button
@@ -160,15 +203,15 @@ const ToDoList = () => {
 
                     <div className="space-y-3">
 
-                        {pendingTasks.length === 0 && (
+                        {loading ? (
+                            <div className="p-8 text-center text-gray-400">Loading...</div>
+                        ) : pendingTasks.length === 0 ? (
                             <div className="bg-gray-50 border border-dashed rounded-xl p-8 text-center text-gray-400 text-sm">
                                 No pending tasks. Time to relax!
                             </div>
-                        )}
-
-                        {pendingTasks.map(task => (
+                        ) : pendingTasks.map(task => (
                             <div
-                                key={task.id}
+                                key={task.$id}
                                 className="bg-white border border-[#EBEBEB] rounded-xl p-6 flex justify-between items-center shadow-sm"
                             >
                                 <div className="flex items-start gap-3">
@@ -176,7 +219,7 @@ const ToDoList = () => {
                                     <input
                                         type="checkbox"
                                         checked={task.completed}
-                                        onChange={() => toggleTask(task.id)}
+                                        onChange={() => toggleTask(task.$id)}
                                         className="mt-1.5 h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                     />
 
@@ -205,15 +248,15 @@ const ToDoList = () => {
 
                     <div className="space-y-3">
 
-                        {completedTasks.length === 0 && (
+                        {!loading && completedTasks.length === 0 && (
                             <div className="bg-gray-50 border border-dashed rounded-xl p-8 text-center text-gray-400 text-sm">
                                 No completed tasks yet.
                             </div>
                         )}
 
-                        {completedTasks.map(task => (
+                        {!loading && completedTasks.map(task => (
                             <div
-                                key={task.id}
+                                key={task.$id}
                                 className="bg-white border border-[#EBEBEB] rounded-xl p-6 flex justify-between items-center shadow-sm opacity-70"
                             >
                                 <div className="flex items-start gap-3">
@@ -221,7 +264,7 @@ const ToDoList = () => {
                                     <input
                                         type="checkbox"
                                         checked={task.completed}
-                                        onChange={() => toggleTask(task.id)}
+                                        onChange={() => toggleTask(task.$id)}
                                         className="mt-1.5 h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                                     />
 

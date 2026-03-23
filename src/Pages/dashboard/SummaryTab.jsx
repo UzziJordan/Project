@@ -162,7 +162,7 @@ const Summary = () => {
                         </li>
                         <li className="flex justify-between">
                             <span>Storage:</span>
-                            <span className="font-mono text-xs bg-gray-100 px-2 py-0.5 rounded">LocalStorage</span>
+                            <span className="font-mono text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded font-bold">Appwrite</span>
                         </li>
                     </ul>
                 </div>

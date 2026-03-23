@@ -1,15 +1,38 @@
 import React, { useEffect, useState } from "react";
 import divrec from "../../Images/divrec.svg";
 import { useNavigate } from "react-router-dom";
+import { databases, account } from "../../lib/appwrite";
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID } from "../../lib/databaseConfig";
+import { Query } from "appwrite";
 
 const RecordList = () => {
   const [records, setRecords] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ================= GET FROM LOCAL STORAGE =================
+  // ================= GET FROM APPWRITE =================
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("recordings")) || [];
-    setRecords(stored);
+    const fetchRecords = async () => {
+      try {
+        const user = await account.get();
+        const response = await databases.listDocuments(
+          DATABASE_ID,
+          RECORDINGS_COLLECTION_ID,
+          [
+            Query.equal('userId', [user.$id]),
+            Query.orderDesc('$createdAt'),
+            Query.limit(5)
+          ]
+        );
+        setRecords(response.documents);
+      } catch (error) {
+        console.error("Error fetching records:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecords();
   }, []);
 
   // ================= FORMAT DATE =================
@@ -57,22 +80,39 @@ const RecordList = () => {
           Recent Recordings
         </h2>
 
-        <span className="text-[14px] text-[#4B5563] cursor-pointer">
-          View →
+        <span 
+          onClick={() => navigate("/dashboard/library")}
+          className="text-[14px] text-[#4B5563] cursor-pointer hover:text-blue-600 transition"
+        >
+          View All →
         </span>
       </div>
 
       {/* LIST */}
       <div className="space-y-4">
-        {records.length === 0 ? (
-          <p className="text-gray-400 text-sm">
-            No recordings yet
-          </p>
+        {loading ? (
+          <div className="p-10 text-center text-gray-400">Loading...</div>
+        ) : records.length === 0 ? (
+          <div className="bg-white p-10 rounded-xl text-center">
+            <p className="text-gray-400 text-sm">
+              No recordings yet.
+            </p>
+            <button 
+              onClick={() => navigate("/dashboard/recording")}
+              className="mt-4 text-blue-600 font-semibold hover:underline"
+            >
+              Start recording →
+            </button>
+          </div>
         ) : (
-          records.map((rec, index) => (
+          records.map((rec) => (
             <div
-              key={index}
-              className="bg-white px-6 py-8 rounded-xl flex justify-between items-center"
+              key={rec.$id}
+              onClick={() => {
+                localStorage.setItem('latestRecording', JSON.stringify(rec));
+                navigate("/dashboard/transcript");
+              }}
+              className="bg-white px-6 py-8 rounded-xl flex justify-between items-center hover:shadow-md transition cursor-pointer"
             >
               {/* LEFT */}
               <div className="flex gap-6">
@@ -111,9 +151,6 @@ const RecordList = () => {
                 </span>
 
                 <span
-                  onClick={() =>
-                    navigate("/dashboard/transcript", { state: rec })
-                  }
                   className="text-[14px] text-[#4B5563] cursor-pointer"
                 >
                   View →

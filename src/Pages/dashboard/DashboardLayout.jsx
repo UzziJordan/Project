@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Outlet } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Outlet, useNavigate } from "react-router-dom";
 import Sidebar from "../../Components/Dashboard/Sidebar";
+import { account } from '../../lib/appwrite';
 
 /**
  * DashboardLayout Component
@@ -8,6 +9,29 @@ import Sidebar from "../../Components/Dashboard/Sidebar";
  */
 const DashboardLayout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                await account.get();
+                setLoading(false);
+            } catch (error) {
+                // Not authenticated
+                navigate('/Login');
+            }
+        };
+        checkAuth();
+    }, [navigate]);
+
+    if (loading) {
+        return (
+            <div className="h-screen flex items-center justify-center bg-[#EFF2F9]">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
 
     // --- RENDER ---
     return (

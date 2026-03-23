@@ -19,7 +19,7 @@ const Navbar = () => {
                 {/* CTA BUTTON */}
                 <NavLink to="/Onboarding">
                     <button className='w-33 h-10.5 bg-[#2828FA] align-middle rounded-xl text-[#FFFFFF] text-[12px] text-geist font-bold'>
-                        Join The Waitlist
+                        Get Started
                     </button>
                 </NavLink>
             </div>

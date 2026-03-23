@@ -1,8 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import HeroSection from "../Components/LoginPage/Hero/HeroSection";
 import SignupForm from "../Components/LoginPage/SignupForm";
+import { account } from '../lib/appwrite';
 
 const SignupPage = () => {
+  const navigate = useNavigate();
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        await account.get();
+        // If successful, user is already logged in
+        navigate('/dashboard');
+      } catch (error) {
+        // Not logged in, stay on signup page
+        setCheckingSession(false);
+      }
+    };
+    checkSession();
+  }, [navigate]);
+
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen lg:h-256 flex flex-col lg:flex-row">
       {/* Hero Section */}

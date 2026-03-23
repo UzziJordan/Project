@@ -2,6 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import { FiUpload, FiMoreHorizontal } from "react-icons/fi";
 import { useNavigate } from 'react-router-dom';
+import { databases, storage, account } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID, BUCKET_ID } from '../../lib/databaseConfig';
+import { Query } from 'appwrite';
 
 import divrec from '../../Images/divrec.svg';
 import audioi from '../../Images/audio.svg';
@@ -16,6 +19,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= STATE =================
   const [recordings, setRecordings] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedRecording, setSelectedRecording] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [openMenuId, setOpenMenuId] = useState(null);
@@ -25,8 +29,26 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= LOAD DATA =================
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('recordings')) || [];
-    setRecordings(data);
+    const fetchRecordings = async () => {
+      try {
+        const user = await account.get();
+        const response = await databases.listDocuments(
+          DATABASE_ID,
+          RECORDINGS_COLLECTION_ID,
+          [
+            Query.equal('userId', [user.$id]),
+            Query.orderDesc('$createdAt')
+          ]
+        );
+        setRecordings(response.documents);
+      } catch (error) {
+        console.error("Error fetching recordings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecordings();
   }, []);
 
 
@@ -95,14 +117,30 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
 
   // ================= ACTIONS =================
-  const handleDelete = (id, e) => {
+  const handleDelete = async (rec, e) => {
     e.stopPropagation();
 
     if (!window.confirm("Delete this recording?")) return;
 
-    const updated = recordings.filter((rec) => rec.id !== id);
-    setRecordings(updated);
-    localStorage.setItem('recordings', JSON.stringify(updated));
+    try {
+      // 1. Delete from Database
+      await databases.deleteDocument(
+        DATABASE_ID,
+        RECORDINGS_COLLECTION_ID,
+        rec.$id
+      );
+
+      // 2. Delete from Storage
+      if (rec.audioFileId) {
+        await storage.deleteFile(BUCKET_ID, rec.audioFileId);
+      }
+
+      const updated = recordings.filter((r) => r.$id !== rec.$id);
+      setRecordings(updated);
+    } catch (error) {
+      console.error("Error deleting recording:", error);
+      alert("Failed to delete recording from Appwrite.");
+    }
 
     setOpenMenuId(null);
   };
@@ -131,7 +169,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
   
   const handleMenuClick = (e, rec) => {
     e.stopPropagation();
-    setOpenMenuId(openMenuId === rec.id ? null : rec.id);
+    setOpenMenuId(openMenuId === rec.$id ? null : rec.$id);
   };
 
 
@@ -151,7 +189,9 @@ const RecordHistory = ({ searchTerm = "" }) => {
         </div>
 
         {/* CONTENT */}
-        {filteredRecordings.length === 0 ? (
+        {loading ? (
+          <div className="p-10 text-center text-gray-400 text-sm">Loading recordings...</div>
+        ) : filteredRecordings.length === 0 ? (
           
           <div className="p-10 text-center text-gray-400 text-sm">
             <p className="mb-2">
@@ -174,9 +214,9 @@ const RecordHistory = ({ searchTerm = "" }) => {
           
           filteredRecordings.map((rec) => (
             <div
-              key={rec.id}
+              key={rec.$id}
               onClick={() => handleRowClick(rec)}
-              className="grid grid-cols-5 items-center px-6 py-4 hover: cursor-pointer transition"
+              className="grid grid-cols-5 items-center px-6 py-4 hover:bg-gray-50 cursor-pointer transition"
             >
 
               {/* TITLE */}
@@ -223,11 +263,11 @@ const RecordHistory = ({ searchTerm = "" }) => {
                       <FiMoreHorizontal />
                     </button>
                     
-                    {openMenuId === rec.id && (
+                    {openMenuId === rec.$id && (
                       <div className="absolute right-0 top-10 w-36 bg-white border rounded-lg shadow-xl z-20 py-1">
 
                         <button
-                          onClick={(e) => handleDelete(rec.id, e)}
+                          onClick={(e) => handleDelete(rec, e)}
                           className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
                           Delete

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import pauseicon from '../../Images/frrpause.svg'
 import recordicon from '../../Images/frmicrophone.svg'
 import stopicon from '../../Images/frrstop.svg'
+import { databases, storage, account, ID } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID, BUCKET_ID } from '../../lib/databaseConfig';
 
 const VoiceMemoRecorder = () => {
   // ---------------- STATE ----------------
@@ -163,7 +165,7 @@ const VoiceMemoRecorder = () => {
 
     const finalDuration = recordingTime;
 
-    mediaRecorderRef.current.onstop = () => {
+    mediaRecorderRef.current.onstop = async () => {
       const mimeType = MediaRecorder.isTypeSupported("audio/mp4")
         ? "audio/mp4"
         : "audio/webm";
@@ -172,32 +174,52 @@ const VoiceMemoRecorder = () => {
         type: mimeType,
       });
 
-      const url = URL.createObjectURL(blob);
-      setAudioURL(url);
+      try {
+        const user = await account.get();
+        const fileId = ID.unique();
+        
+        // 1. Upload to Appwrite Storage
+        const file = new File([blob], `recording-${Date.now()}.mp4`, { type: mimeType });
+        await storage.createFile(BUCKET_ID, fileId, file);
 
-      const newRecording = {
-        id: Date.now(),
-        title: `Recording ${new Date().toLocaleTimeString()}`,
-        date: new Date().toISOString(),
-        duration: finalDuration,
-        audioURL: url,
-        tag: "Meeting",
-        transcript: transcript || "No transcript",
-        summary: transcript.slice(0, 120) + "...",
-      };
+        // 2. Get file URL (or just store fileId)
+        const fileUrl = storage.getFileView(BUCKET_ID, fileId);
 
-      const existing =
-        JSON.parse(localStorage.getItem("recordings")) || [];
+        const newRecording = {
+          userId: user.$id,
+          title: `Recording ${new Date().toLocaleTimeString()}`,
+          date: new Date().toISOString(),
+          duration: finalDuration,
+          audioFileId: fileId,
+          audioURL: fileUrl.toString(),
+          tag: "Meeting",
+          transcript: transcript || "No transcript",
+          summary: transcript.slice(0, 120) + "...",
+        };
 
-      localStorage.setItem(
-        "recordings",
-        JSON.stringify([newRecording, ...existing])
-      );
+        // 3. Save metadata to Appwrite Database
+        const response = await databases.createDocument(
+          DATABASE_ID,
+          RECORDINGS_COLLECTION_ID,
+          ID.unique(),
+          newRecording
+        );
 
-      localStorage.setItem(
-        "latestRecording",
-        JSON.stringify(newRecording)
-      );
+        // Also update latestRecording in localStorage for quick access if needed, 
+        // but the goal is to move away from it.
+        localStorage.setItem("latestRecording", JSON.stringify(response));
+
+        setTimeout(() => {
+          setRecordingTime(0);
+          setRecordingState("READY TO RECORD");
+          navigate("/dashboard/transcript");
+        }, 500);
+
+      } catch (error) {
+        console.error("Error saving recording:", error);
+        alert("Failed to save recording to Appwrite. Check your configuration.");
+        setRecordingState("READY TO RECORD");
+      }
     };
 
     mediaRecorderRef.current.stop();
@@ -207,12 +229,6 @@ const VoiceMemoRecorder = () => {
 
     cancelAnimationFrame(animationRef.current);
     clearInterval(intervalRef.current);
-
-    setTimeout(() => {
-      setRecordingTime(0);
-      setRecordingState("READY TO RECORD");
-      navigate("/dashboard/transcript");
-    }, 1500);
   };
 
   // ---------------- DOWNLOAD ----------------

@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { FiSearch, FiEdit, FiShare2, FiCalendar, FiClock } from "react-icons/fi";
 import wavve from '../../Images/wavve.svg';
 import playi from '../../Images/playi.svg';
+import { databases } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID } from '../../lib/databaseConfig';
 
 /**
  * TranscriptTab Component
@@ -34,6 +36,7 @@ const TranscriptTab = () => {
 
     // --- HELPERS ---
     const formatTime = (seconds) => {
+        if (!seconds) return "0:00";
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return `${mins}:${secs.toString().padStart(2, '0')}`;
@@ -69,27 +72,24 @@ const TranscriptTab = () => {
         setCurrentTime(0);
     };
 
-    const handleRename = () => {
+    const handleRename = async () => {
         if (!recording || !newTitle.trim()) return;
 
-        const updatedRecording = {
-            ...recording,
-            title: newTitle.trim()
-        };
+        try {
+            const response = await databases.updateDocument(
+                DATABASE_ID,
+                RECORDINGS_COLLECTION_ID,
+                recording.$id,
+                { title: newTitle.trim() }
+            );
 
-        setRecording(updatedRecording);
-        localStorage.setItem('latestRecording', JSON.stringify(updatedRecording));
-
-        const allRecordings =
-            JSON.parse(localStorage.getItem('recordings')) || [];
-
-        const updatedAllRecordings = allRecordings.map(rec =>
-            rec.id === updatedRecording.id ? updatedRecording : rec
-        );
-
-        localStorage.setItem('recordings', JSON.stringify(updatedAllRecordings));
-
-        setShowRenameModal(false);
+            setRecording(response);
+            localStorage.setItem('latestRecording', JSON.stringify(response));
+            setShowRenameModal(false);
+        } catch (error) {
+            console.error("Error renaming recording:", error);
+            alert("Failed to rename recording in Appwrite.");
+        }
     };
 
 

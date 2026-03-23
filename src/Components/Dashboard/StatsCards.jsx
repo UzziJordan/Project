@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import { databases, account } from '../../lib/appwrite';
+import { DATABASE_ID, RECORDINGS_COLLECTION_ID, TODOS_COLLECTION_ID } from '../../lib/databaseConfig';
+import { Query } from 'appwrite';
 
 /**
  * StatsCards Component
@@ -17,37 +20,53 @@ const StatsCards = () => {
 
     // --- SIDE EFFECTS ---
     useEffect(() => {
-        const recordings = JSON.parse(localStorage.getItem('recordings')) || [];
+        const fetchStats = async () => {
+            try {
+                const user = await account.get();
+                
+                // Fetch recordings
+                const recordingsResponse = await databases.listDocuments(
+                    DATABASE_ID,
+                    RECORDINGS_COLLECTION_ID,
+                    [Query.equal('userId', [user.$id])]
+                );
+                
+                const recordings = recordingsResponse.documents;
+                const totalRecordings = recordings.length;
 
-        const totalRecordings = recordings.length;
+                const totalDurationSeconds = recordings.reduce(
+                    (acc, curr) => acc + (curr.duration || 0),
+                    0
+                );
 
-        const totalDurationSeconds = recordings.reduce(
-            (acc, curr) => acc + (curr.duration || 0),
-            0
-        );
+                // Fetch general todos
+                const todosResponse = await databases.listDocuments(
+                    DATABASE_ID,
+                    TODOS_COLLECTION_ID,
+                    [
+                        Query.equal('userId', [user.$id]),
+                        Query.equal('completed', [false])
+                    ]
+                );
+                
+                const pendingGeneralTodos = todosResponse.total;
 
-        // Calculate pending tasks across all recordings
-        let pendingTasksCount = 0;
-        let meetingsWithTasksCount = 0;
-
-        recordings.forEach(rec => {
-            if (rec.todos && Array.isArray(rec.todos)) {
-                const pending = rec.todos.filter(t => !t.completed).length;
-
-                pendingTasksCount += pending;
-
-                if (pending > 0) {
-                    meetingsWithTasksCount++;
-                }
+                // Calculate pending tasks from recordings (if stored as sub-attributes)
+                // In the current schema we aren't storing them separately yet,
+                // but we can count general pending tasks.
+                
+                setStats({
+                    totalRecordings,
+                    totalDuration: totalDurationSeconds,
+                    pendingTasks: pendingGeneralTodos,
+                    meetingsWithTasks: 0 // This would need a more complex query if we had recording-specific tasks
+                });
+            } catch (error) {
+                console.error("Error fetching stats:", error);
             }
-        });
+        };
 
-        setStats({
-            totalRecordings,
-            totalDuration: totalDurationSeconds,
-            pendingTasks: pendingTasksCount,
-            meetingsWithTasks: meetingsWithTasksCount
-        });
+        fetchStats();
     }, []);
 
 

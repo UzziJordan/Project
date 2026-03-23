@@ -44,13 +44,17 @@ const SignupForm = () => {
         try {
             setLoading(true);
 
+            const fullName = `${firstName} ${lastName}`;
             const user = await account.create({
                 userId: ID.unique(),
-                name: `${firstName} ${lastName}`,
+                name: fullName,
                 email: email,
                 password: password
             });
             console.log(user);
+
+            // Store name for onboarding
+            localStorage.setItem('lastUserName', fullName);
 
             // Redirect to login after successful signup
             navigate("/login");
