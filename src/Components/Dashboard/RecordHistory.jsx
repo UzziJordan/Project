@@ -159,7 +159,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
           <div className="col-span-1 md:col-span-2">TITLE</div>
           <div className="hidden md:block">DATE</div>
           <div className="hidden md:block">DURATION</div>
-          <div className="text-right md:text-left">TAGS / ACTIONS</div>
+          <div className="text-right md:text-left">TAGS / ACTIONS </div>
         </div>
 
         {/* TABLE CONTENT */}
