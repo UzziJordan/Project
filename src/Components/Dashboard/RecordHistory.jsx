@@ -32,7 +32,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= SIDE EFFECTS =================
 
-  // 1. Fetch data from Appwrite on mount
+  // Fetch data from Appwrite on mount
   useEffect(() => {
     const fetchRecordings = async () => {
       try {
@@ -56,7 +56,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
     fetchRecordings();
   }, []);
 
-  // 2. Handle clicking outside to close the 3-dot menu
+  // Handle clicking outside to close the 3-dot menu
   useEffect(() => {
     const handleClickOutside = () => setOpenMenuId(null);
     if (openMenuId !== null) {
@@ -87,7 +87,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Formats date to "Aug 23, 2024"
+  // Formats date
   const formatDate = (date) => {
     if (!date) return "";
     return new Date(date).toLocaleDateString("en-US", {
@@ -110,7 +110,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
 
   // ================= EVENT HANDLERS =================
 
-  // 1. Delete a recording from DB and Storage
+  // Delete a recording from DB and Storage
   const handleDelete = async (rec, e) => {
     e.stopPropagation();
     if (!window.confirm("Delete this recording?")) return;
@@ -128,20 +128,20 @@ const RecordHistory = ({ searchTerm = "" }) => {
     setOpenMenuId(null);
   };
 
-  // 2. Navigate to detailed transcript view
+  // Navigate to detailed transcript view
   const handleRowClick = (rec) => {
     localStorage.setItem('latestRecording', JSON.stringify(rec));
     navigate('/dashboard/transcript');
   };
 
-  // 3. Open Share Modal
+  // Open Share Modal
   const handleShareClick = (e, rec) => {
     e.stopPropagation();
     setSelectedRecording(rec);
     setShowModal(true);
   };
 
-  // 4. Toggle 3-dot menu
+  // Toggle 3-dot menu
   const handleMenuClick = (e, rec) => {
     e.stopPropagation();
     setOpenMenuId(openMenuId === rec.$id ? null : rec.$id);
@@ -174,7 +174,7 @@ const RecordHistory = ({ searchTerm = "" }) => {
               onClick={() => handleRowClick(rec)}
               className="grid grid-cols-2 md:grid-cols-5 items-center px-4 md:px-6 py-4 hover:bg-gray-50 border-b border-gray-100 cursor-pointer transition"
             >
-              {/* 1. Title & Mobile Subtext */}
+              {/* Title & Mobile Subtext */}
               <div className="col-span-1 md:col-span-2 flex items-center gap-3 font-semibold">
                 <img src={divrec} alt="icon" className="w-8 h-8 opacity-80" />
                 <div className="truncate">
@@ -183,13 +183,13 @@ const RecordHistory = ({ searchTerm = "" }) => {
                 </div>
               </div>
 
-              {/* 2. Date */}
+              {/* Date */}
               <div className='hidden md:block text-sm text-[#1F2937]'>{formatDate(rec.date)}</div>
 
-              {/* 3. Duration */}
+              {/* Duration */}
               <div className='hidden md:block text-sm text-[#1F2937]'>{formatTime(rec.duration)}</div>
 
-              {/* 4. Actions */}
+              {/* Actions */}
               <div className="flex items-center justify-end md:justify-between gap-2">
                 <span className={`hidden sm:inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase ${getTagStyles(rec.tag)}`}>
                   {rec.tag || "Meeting"}

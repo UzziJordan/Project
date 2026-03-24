@@ -167,7 +167,7 @@ const TranscriptTab = () => {
                 onEnded={handleEnded}
             />
 
-            {/* 1. TOP HEADER BAR */}
+            {/* TOP HEADER BAR */}
             <div className="px-6 py-5 rounded-2xl flex flex-col border-2 border-[#EBEBEB] md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h1 className="text-base md:text-[22px] font-extrabold text-[#2B2B2B]">
@@ -200,7 +200,7 @@ const TranscriptTab = () => {
 
             <div className='mt-6 flex flex-col lg:flex-row gap-6'>
 
-                {/* 2. LEFT PLAYER PANEL */}
+                {/* LEFT PLAYER PANEL */}
                 <div className="bg-white rounded-xl p-5 md:p-6 border-2 border-[#EBEBEB] w-full lg:w-95 h-fit lg:top-4">
                     <div>
                         <div className="flex items-center gap-3 text-[14px] text-[#808080] mt-2">
@@ -248,7 +248,7 @@ const TranscriptTab = () => {
                     </div>
                 </div>
 
-                {/* 3. RIGHT TRANSCRIPT PANEL */}
+                {/* RIGHT TRANSCRIPT PANEL */}
                 <div className="bg-white rounded-xl border-2 border-[#EBEBEB] flex-1 min-h-75 md:min-h-125">
                     <div className="flex flex-col sm:flex-row justify-between p-6 items-start sm:items-center mb-6 md:mb-8 border border-[#EBEBEB] pb-4 gap-4 sm:gap-0">
                         <div className="font-bold text-xl text-gray-800">Transcript</div>
@@ -274,7 +274,7 @@ const TranscriptTab = () => {
                 </div>
             </div>
 
-            {/* 4. SHARE MODAL */}
+            {/* SHARE MODAL */}
             {showShareModal && recording && (
                 <div className="fixed inset-0 backdrop-blur-md bg-black/30 flex items-center justify-center z-50 p-4" onClick={() => setShowShareModal(false)}>
                     <div className="bg-white w-full max-w-md rounded-2xl p-6 relative shadow-2xl" onClick={(e) => e.stopPropagation()}>

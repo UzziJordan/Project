@@ -60,13 +60,13 @@ const Summary = () => {
         const d = new Date(date);
 
         return d.toLocaleString("en-GB", {
-            weekday: "short",   // Tue
-            day: "2-digit",     // 23
-            month: "short",     // Aug
+            weekday: "short",   
+            day: "2-digit",     
+            month: "short",     
             hour: "2-digit",
             minute: "2-digit",
             second: "2-digit",
-            hour12: false,      // 19:26:54
+            hour12: false,      
         });
     };
 

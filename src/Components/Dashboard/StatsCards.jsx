@@ -52,14 +52,12 @@ const StatsCards = () => {
                 const pendingGeneralTodos = todosResponse.total;
 
                 // Calculate pending tasks from recordings (if stored as sub-attributes)
-                // In the current schema we aren't storing them separately yet,
-                // but we can count general pending tasks.
-                
+
                 setStats({
                     totalRecordings,
                     totalDuration: totalDurationSeconds,
                     pendingTasks: pendingGeneralTodos,
-                    meetingsWithTasks: 0 // This would need a more complex query if we had recording-specific tasks
+                    meetingsWithTasks: 0 
                 });
             } catch (error) {
                 console.error("Error fetching stats:", error);

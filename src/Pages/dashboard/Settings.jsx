@@ -58,24 +58,24 @@ const Settings = () => {
         try {
             setUploading(true);
             
-            // 1. Upload to Appwrite Storage
+            // Upload to Appwrite Storage
             const response = await storage.createFile(
                 PROFILE_BUCKET_ID,
                 ID.unique(),
                 file
             );
 
-            // 2. Update user preferences with new file ID
+            // Update user preferences with new file ID
             await account.updatePrefs({
                 ...user.prefs,
                 profileId: response.$id
             });
 
-            // 3. Update local state
+            // Update local state
             const url = storage.getFileView(PROFILE_BUCKET_ID, response.$id);
             setProfileUrl(url.toString());
 
-            // 4. Notify other components (like Sidebar) to refresh
+            // Notify other components (like Sidebar) to refresh
             window.dispatchEvent(new Event('profileUpdate'));
             
             alert("Profile picture updated successfully!");

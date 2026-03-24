@@ -16,10 +16,10 @@ import stopicon from '../../Images/frrstop.svg';
 const VoiceMemoRecorder = () => {
   
   // ================= STATE =================
-  const [recordingState, setRecordingState] = useState("READY TO RECORD"); // READY, recording, paused, processing
-  const [recordingTime, setRecordingTime] = useState(0);                    // Timer in seconds
-  const [waveformBars, setWaveformBars] = useState(Array(20).fill(20));      // Visualization data
-  const [transcript, setTranscript] = useState("");                          // Live transcript text
+  const [recordingState, setRecordingState] = useState("READY TO RECORD"); 
+  const [recordingTime, setRecordingTime] = useState(0);                   
+  const [waveformBars, setWaveformBars] = useState(Array(20).fill(20));    
+  const [transcript, setTranscript] = useState("");                         
 
   const navigate = useNavigate();
 
@@ -36,7 +36,7 @@ const VoiceMemoRecorder = () => {
 
   // ================= SIDE EFFECTS =================
 
-  // 1. Initialize Speech Recognition (Browser API)
+  // Initialize Speech Recognition (Browser API)
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
@@ -56,7 +56,7 @@ const VoiceMemoRecorder = () => {
     }
   }, []);
 
-  // 2. Timer Control Logic
+  // Timer Control Logic
   useEffect(() => {
     if (recordingState === "recording") {
       intervalRef.current = setInterval(() => {
@@ -96,7 +96,7 @@ const VoiceMemoRecorder = () => {
 
   // ================= EVENT HANDLERS =================
 
-  // 1. START RECORDING
+  // START RECORDING
   const handleStartRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -131,7 +131,7 @@ const VoiceMemoRecorder = () => {
     }
   };
 
-  // 2. PAUSE / RESUME
+  // PAUSE / RESUME
   const handlePause = () => {
     mediaRecorderRef.current?.pause();
     recognitionRef.current?.stop();
@@ -146,7 +146,7 @@ const VoiceMemoRecorder = () => {
     setRecordingState("recording");
   };
 
-  // 3. STOP & SAVE TO APPWRITE
+  // STOP & SAVE TO APPWRITE
   const handleStop = () => {
     setRecordingState("processing");
     const finalDuration = recordingTime;
@@ -159,12 +159,12 @@ const VoiceMemoRecorder = () => {
         const user = await account.get();
         const fileId = ID.unique();
         
-        // A. Upload Audio File to Appwrite Storage
+        // Upload Audio File to Appwrite Storage
         const file = new File([blob], `recording-${Date.now()}.mp4`, { type: mimeType });
         await storage.createFile(BUCKET_ID, fileId, file);
         const fileUrl = storage.getFileView(BUCKET_ID, fileId);
 
-        // B. Prepare Metadata for Database
+        // Prepare Metadata for Database
         const newRecording = {
           userId: user.$id,
           title: `Recording ${new Date().toLocaleTimeString()}`,
@@ -177,7 +177,7 @@ const VoiceMemoRecorder = () => {
           summary: transcript ? (transcript.slice(0, 150) + "...") : "No summary available"
         };
 
-        // C. Save to Appwrite Database
+        // Save to Appwrite Database
         const response = await databases.createDocument(
           DATABASE_ID,
           RECORDINGS_COLLECTION_ID,
@@ -215,7 +215,7 @@ const VoiceMemoRecorder = () => {
     <div className="flex items-center justify-center mt-5 font-geist">
       <div className="p-10 w-full max-w-md flex flex-col items-center">
 
-        {/* 1. STATUS BADGE */}
+        {/* STATUS BADGE */}
         <div className={`mb-4 text-[18px] font-semibold flex items-center gap-2 rounded-full px-4 py-2
           ${recordingState === "recording" ? "bg-[#D4D4FE] text-[#4C4CFB]" : 
             recordingState === "paused" ? "bg-[#FED3D4] text-[#FC464A]" : 
@@ -226,7 +226,7 @@ const VoiceMemoRecorder = () => {
           {recordingState.toUpperCase()}
         </div>        
       
-        {/* 2. MAIN RECORD BUTTON */}
+        {/* MAIN RECORD BUTTON */}
         <button
           onClick={handleStartRecording}
           disabled={recordingState !== "READY TO RECORD"}
@@ -252,7 +252,7 @@ const VoiceMemoRecorder = () => {
           </p>
         </div>
 
-        {/* 3. TIMER & WAVEFORM */}
+        {/* TIMER & WAVEFORM */}
         {(recordingState === "recording" || recordingState === "paused") && (
           <div className="text-2xl mt-4 font-mono">{formatTime(recordingTime)}</div>
         )}
@@ -265,7 +265,7 @@ const VoiceMemoRecorder = () => {
           </div>
         </div>
 
-        {/* 4. CONTROLS (VISIBLE WHEN RECORDING) */}
+        {/* CONTROLS (VISIBLE WHEN RECORDING) */}
         {recordingState !== "READY TO RECORD" && recordingState !== "processing" && (
           <div className="flex gap-3 mt-5">
             <button

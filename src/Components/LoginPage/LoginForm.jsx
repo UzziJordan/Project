@@ -55,6 +55,7 @@ const LoginForm = () => {
     // --- RENDER ---
     return (
         <div className="bg-[#FFFFFF] mt-15 pl-10 md:pl-0 py-10 w-105 text-geist">
+
             {/* TOGGLE SECTION: Switch between Sign In and Create Account */}
             <div className="flex bg-[#F3F4F6] rounded-lg p-1 h-10 text-[10px] md:text-[14px] font-semibold">
                 <button className="bg-white rounded-md px-15 md:px-18 py-1">
@@ -79,6 +80,7 @@ const LoginForm = () => {
 
             {/* LOGIN FORM SECTION */}
             <form onSubmit={handleSubmit}>
+                
                 {/* Google OAuth Button */}
                 <button
                     type="button"

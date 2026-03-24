@@ -13,10 +13,10 @@ import { Query } from 'appwrite';
 const ToDoList = () => {
 
     // ================= STATE & HOOKS =================
-    const [tasks, setTasks] = useState([]);                 // All tasks from database
-    const [loading, setLoading] = useState(true);           // Loading state
-    const [showInput, setShowInput] = useState(false);      // Toggle for new task input
-    const [newTask, setNewTask] = useState("");             // Text for new task
+    const [tasks, setTasks] = useState([]);                 
+    const [loading, setLoading] = useState(true);           
+    const [showInput, setShowInput] = useState(false);      
+    const [newTask, setNewTask] = useState("");             
 
 
     // ================= SIDE EFFECTS =================
@@ -130,7 +130,7 @@ const ToDoList = () => {
 
             <div className="pt-7 px-18">
 
-                {/* 1. HEADER & COUNTERS */}
+                {/* HEADER & COUNTERS */}
                 <div className="flex justify-between items-center">
                     <div>
                         <h1 className="text-2xl font-semibold">To-Do List</h1>
@@ -152,7 +152,7 @@ const ToDoList = () => {
                     </button>
                 </div>
 
-                {/* 2. TASK INPUT AREA */}
+                {/* TASK INPUT AREA */}
                 {showInput && (
                     <div className="mt-4 flex gap-2 animate-in slide-in-from-top-2 duration-200">
                         <input
@@ -168,7 +168,7 @@ const ToDoList = () => {
                     </div>
                 )}
 
-                {/* 3. PROGRESS BAR */}
+                {/* PROGRESS BAR */}
                 <div className="bg-white border border-[#EBEBEB] rounded-xl p-7 mt-5 shadow-sm">
                     <div className="flex justify-between text-sm mb-2 font-semibold">
                         <span>Weekly Progress</span>
@@ -179,7 +179,7 @@ const ToDoList = () => {
                     </div>
                 </div>
 
-                {/* 4. PENDING LIST */}
+                {/* PENDING LIST */}
                 <div className='mt-8'>
                     <p className="text-gray-400 text-sm font-bold mb-3 uppercase tracking-widest">Pending</p>
                     <div className="space-y-3">
@@ -204,7 +204,7 @@ const ToDoList = () => {
                     </div>
                 </div>
 
-                {/* 5. COMPLETED LIST */}
+                {/* COMPLETED LIST */}
                 <div className='mt-8 pb-10'>
                     <p className="text-gray-400 text-sm font-bold mb-3 uppercase tracking-widest">Completed</p>
                     <div className="space-y-3">

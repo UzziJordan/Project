@@ -24,10 +24,10 @@ const Section2 = () => {
                 <p className='text-[16px] text-[#6B7280] w-66.5 mx-auto md:w-112.75'>Built for professionals who are tired of drowning in recordings and scribbled notes.</p>
             </div>
             
-            {/* STEPS CONTAINER */}
+            {/* CONTAINER */}
             <div className="flex flex-col gap-5 md:flex md:flex-col md:gap-10 lg:flex-row lg:gap-40 mt-20">
                 <div className="flex flex-col gap-5 md:flex md:flex-row md:gap-40 lg:flex-row items-start justify-center lg:gap-40">
-                    {/* STEP 1: Record */}
+                    {/* Record */}
                     <div className="flex flex-col items-center text-center w-60">
                         <div className="h-8 w-24 bg-[#2828FA]/10 rounded-2xl text-[#2828FA] font-semibold flex items-center justify-center"> STEP - 01 </div>
                         <div className="pt-4 mb-0">
@@ -42,7 +42,7 @@ const Section2 = () => {
                         </div>
                     </div>
                     
-                    {/* STEP 2: Transcribe */}
+                    {/* Transcribe */}
                     <div className="flex flex-col items-center text-center w-60">
                         <div>
                             <img src={line2} alt="line" />
@@ -58,7 +58,7 @@ const Section2 = () => {
                     </div>
                 </div>
                 
-                {/* STEP 3: Summarize */}
+                {/* Summarize */}
                 <div className="flex flex-col items-center text-center w-60 md:mx-auto">
                     <div className="h-8 w-24 bg-[#2828FA]/10 rounded-2xl text-[#2828FA] font-semibold flex items-center justify-center"> STEP - 03 </div>
                     <div className="pt-4">

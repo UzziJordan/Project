@@ -71,8 +71,8 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       await account.deleteSession("current");
       localStorage.removeItem("user");
       localStorage.removeItem("latestRecording");
-      localStorage.removeItem("recordings"); // Cleanup legacy data
-      localStorage.removeItem("generalTodos"); // Cleanup legacy data
+      localStorage.removeItem("recordings"); 
+      localStorage.removeItem("generalTodos"); 
       navigate("/Onboarding");
     } catch (err) {
       console.error("Logout failed:", err);

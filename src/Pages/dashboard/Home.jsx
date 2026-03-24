@@ -25,9 +25,7 @@ const Home = () => {
 
                 {/* RECENT RECORDINGS LIST */}
                 <RecordList />
-
-                {/* EMPTY STATE FALLBACK */}
-            </div>
+                            </div>
         </div>
     );
 };

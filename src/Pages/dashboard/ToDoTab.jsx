@@ -122,7 +122,7 @@ const ToDoTab = () => {
     return (
         <div className="space-y-6 text-geist font-geist">
             
-            {/* 1. HEADER SECTION */}
+            {/* HEADER SECTION */}
             <div className="bg-[#EAEAFC] p-6 rounded-2xl flex justify-between items-center border border-[#D1D1FB]">
                 <div>
                     <h2 className="font-extrabold text-[22px] text-[#000000]">
@@ -151,7 +151,7 @@ const ToDoTab = () => {
                 </span>
             </div>
 
-            {/* 2. PENDING TASKS SECTION */}
+            {/* PENDING TASKS SECTION */}
             <div className="space-y-4">
                 <h3 className="text-sm font-bold text-gray-400 uppercase flex items-center gap-2">
                     Pending Tasks <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md text-[10px]">{pendingTodos.length}</span>
@@ -188,7 +188,7 @@ const ToDoTab = () => {
                 )}
             </div>
 
-            {/* 3. COMPLETED TASKS SECTION */}
+            {/* COMPLETED TASKS SECTION */}
             <div className="space-y-4 pt-4 pb-10">
                 <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
                     Completed <span className="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-md text-[10px]">{completedTodos.length}</span>
