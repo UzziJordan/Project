@@ -162,7 +162,7 @@ const VoiceMemoRecorder = () => {
         // Upload Audio File to Appwrite Storage
         const file = new File([blob], `recording-${Date.now()}.mp4`, { type: mimeType });
         await storage.createFile(BUCKET_ID, fileId, file);
-        const fileUrl = storage.getFileView(BUCKET_ID, fileId);
+        const fileUrl = storage.getFileView(BUCKET_ID, fileId);;;
 
         // Prepare Metadata for Database
         const newRecording = {
